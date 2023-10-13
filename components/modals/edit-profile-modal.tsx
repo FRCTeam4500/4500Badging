@@ -37,7 +37,7 @@ const formSchema = z.object({
 });
 
 export const EditProfileModal = () => {
-  const { isOpen, onClose, type, data } = useModal();
+  const { isOpen, onClose, type, data, onOpen } = useModal();
   const router = useRouter();
 
   let { profile, accessor } = data;
@@ -63,6 +63,10 @@ export const EditProfileModal = () => {
       form.setValue("phoneNumber", profile?.phoneNumber);
       form.setValue("grade", profile?.grade);
       form.setValue("graduationYear", profile?.graduationYear);
+      form.setValue("name", profile?.name);
+      form.setValue("imageUrl", profile?.imageUrl);
+      form.setValue("isRegistered", profile?.isRegistered);
+      form.setValue("isTravelCertified", profile?.isTravelCertified);
     }
   }, [form, profile]);
 

@@ -12,18 +12,28 @@ export async function GET(req: Request) {
     }
 
     if (
-      profile.role != Profile_role.COACH &&
-      profile.role != Profile_role.LEAD
+      profile.role == Profile_role.COACH ||
+      profile.role == Profile_role.LEAD ||
+      profile.role == Profile_role.CAPTAIN
     ) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      const ret = await db.badge.findMany({
+        include: {
+          userBadge: true,
+        },
+      });
+      return NextResponse.json(ret);
+    } else {
+      const ret = await db.badge.findMany({
+        include: {
+          userBadge: {
+            where: {
+              profileId: profile.id,
+            },
+          },
+        },
+      });
+      return NextResponse.json(ret);
     }
-
-    const ret = await db.badge.findMany({
-      include: {
-        userBadge: true,
-      },
-    });
-    return NextResponse.json(ret);
   } catch (error) {
     console.error("[BADGE_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });

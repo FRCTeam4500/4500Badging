@@ -1,5 +1,7 @@
 "use client";
 
+import { UserBadgeGrid } from "@/components/badges/badge-grid";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { initialProfile } from "@/lib/initial-profile";
@@ -18,6 +20,8 @@ export function ClientA({ profile }: { profile: Profile }) {
       >
         Update User
       </Button>
+      <ModeToggle />
+      <UserBadgeGrid modalType="editProfile" />
     </div>
   );
 }
