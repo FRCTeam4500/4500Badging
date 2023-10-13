@@ -21,7 +21,7 @@ export function ClientA({ profile }: { profile: Profile }) {
         Update User
       </Button>
       <ModeToggle />
-      <UserBadgeGrid modalType="editProfile" />
+      {/* <UserBadgeGrid modalType="editProfile" /> */}
     </div>
   );
 }

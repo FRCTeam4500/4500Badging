@@ -2,6 +2,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { useModal } from "@/hooks/use-modal-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Badge, BadgeCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Form, FormField, FormItem } from "../ui/form";
+import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { ScrollArea } from "../ui/scroll-area";
 import {
   Tooltip,
@@ -28,8 +29,8 @@ const formSchema = z.object({
 
 export function UserBadgeGrid({ modalType }: { modalType: string }) {
   const [open, setOpen] = useState(false);
-  const [badges, setBadges] = useState();
-  const [userBadges, setUserBadges] = useState();
+  const [badges, setBadges] = useState<any>();
+  const [userBadges, setUserBadges] = useState<any>();
 
   const { onClose, data } = useModal();
   let { profile } = data;
@@ -87,9 +88,46 @@ export function UserBadgeGrid({ modalType }: { modalType: string }) {
       });
   }, []);
 
-  async function handleSelectionEnd() {
-    setOpen(false);
-  }
+  // * Sets the default values of the form to the user's current badges
+  useEffect(() => {
+    if (userBadges) {
+      const userBadgeBadgeIds = userBadges.map(
+        (userBadge) => userBadge.badgeId
+      );
+      form.setValue("badgeIds", userBadgeBadgeIds);
+    }
+  }, [form, userBadges]);
+
+  const router = useRouter();
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      (async () => {
+        console.log(profile?.id);
+        const rawResponse = await fetch(`/api/userbadges/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            badgeIds: values.badgeIds,
+            profileId: profile?.id,
+          }),
+        });
+        const content = await rawResponse.json();
+        console.log(content);
+        router.refresh();
+      })();
+
+      form.reset();
+      router.refresh();
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const isLoading = form.formState.isSubmitting;
 
   return (
     <DropdownMenu open={open}>
@@ -102,44 +140,64 @@ export function UserBadgeGrid({ modalType }: { modalType: string }) {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <Form {...form}>
-            <form>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <ScrollArea>
                 <FormField
                   control={form.control}
                   name="badgeIds"
                   render={({ field }) => (
-                    <FormItem className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                      // TODO ADD BADGES
-                      <Toggle
-                        variant={"default"}
-                        className="bg-primary px-[0.5] py-1"
-                      >
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Avatar>
-                                <AvatarImage />
-                                <AvatarFallback className="bg-primary text-secondary">
-                                  <Badge />
-                                </AvatarFallback>
-                              </Avatar>
-                            </TooltipTrigger>
-                            <TooltipContent>This is a badge.</TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </Toggle>
+                    <FormItem
+                      key={field.name}
+                      className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                    >
+                      {badges.map((badge) => (
+                        <FormControl>
+                          <Toggle
+                            variant={"default"}
+                            pressed={field.value?.includes(badge.id)}
+                            value={badge.id}
+                            onPressedChange={(value) => {
+                              return value
+                                ? field.onChange([...field.value!, badge.id])
+                                : field.onChange(
+                                    field.value?.filter((v) => v !== badge.id)
+                                  );
+                            }}
+                            className="bg-primary px-[0.5] py-1"
+                          >
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Avatar>
+                                    <AvatarImage src={badge.imageUrl} />
+                                    <AvatarFallback className="bg-primary text-secondary">
+                                      <Badge />
+                                    </AvatarFallback>
+                                  </Avatar>
+                                </TooltipTrigger>
+                                <TooltipContent>{badge.name}</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </Toggle>
+                        </FormControl>
+                      ))}
                     </FormItem>
                   )}
                 />
               </ScrollArea>
+              <div className="grid grid-cols-1 mt-2">
+                <Button variant="default" disabled={isLoading}>
+                  Save
+                </Button>
+              </div>
             </form>
           </Form>
         </DropdownMenuItem>
-        <DropdownMenuItem className="grid grid-cols-1">
+        {/* <DropdownMenuItem >
           <Button onClick={() => handleSelectionEnd()} variant={"default"}>
             Submit Selection
           </Button>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

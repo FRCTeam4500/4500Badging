@@ -35,7 +35,7 @@ export async function POST(req: Request) {
   try {
     const profile: Profile | null = await currentProfile();
 
-    const { badgeId, profileId } = await req.json();
+    const { badgeIds, profileId } = await req.json();
 
     if (!profile) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -48,13 +48,12 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const badge = await db.badge.findUnique({
-      where: {
-        id: badgeId,
-      },
-    });
-    if (!badge) {
-      return new NextResponse("Badge ID invalid", { status: 400 });
+    if (!badgeIds) {
+      return new NextResponse("Badge IDs invalid", { status: 400 });
+    }
+
+    if (!profileId) {
+      return new NextResponse("Profile ID invalid", { status: 400 });
     }
 
     const postProfile = await db.profile.findUnique({
@@ -66,14 +65,27 @@ export async function POST(req: Request) {
       return new NextResponse("Profile ID invalid", { status: 400 });
     }
 
-    const updatedUserBadge = await db.userBadge.create({
-      data: {
-        profileId,
-        badgeId,
-      },
+    const updates: any = [];
+
+    badgeIds.forEach(async (badgeId) => {
+      const badge = await db.badge.findUnique({
+        where: {
+          id: badgeId,
+        },
+      });
+      if (!badge) {
+        return new NextResponse("Badge ID invalid", { status: 400 });
+      }
+      const updatedUserBadge = await db.userBadge.create({
+        data: {
+          profileId,
+          badgeId,
+        },
+      });
+      updates.push(updatedUserBadge);
     });
 
-    return NextResponse.json(updatedUserBadge);
+    return NextResponse.json(updates);
   } catch (error) {
     console.error("[USER_BADGE_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });

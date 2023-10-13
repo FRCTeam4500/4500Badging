@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
+import { UserBadgeGrid } from "../badges/badge-grid";
 
 const formSchema = z.object({
   phoneNumber: z.string().optional(),
@@ -164,6 +165,7 @@ export const EditProfileSelfModal = () => {
                 )}
               />
             </div>
+            <UserBadgeGrid modalType="editProfileSelf" />
             <DialogFooter className="grid grid-cols-1 px-6 py-4">
               <Button variant="default" disabled={isLoading}>
                 Save
