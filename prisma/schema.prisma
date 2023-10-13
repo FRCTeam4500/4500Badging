@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Profile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  name              String
+  imageUrl          String   @db.Text
+  email             String   @db.Text
+  graduationYear    Int
+  grade             Int
+  phoneNumber       String   @db.Text
+  isRegistered      Boolean  @default(false)
+  isTravelCertified Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  role   Profile_role @default(MEMBER)
+  badges UserBadge[]
+}
+
+model Badge {
+  id          String      @id @default(uuid())
+  name        String
+  level       Int
+  description String
+  imageUrl    String      @db.Text
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  userBadge   UserBadge[]
+  subteamType Subteams
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  profileId String
+  badgeId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([badgeId])
+}
+
+enum Subteams {
+  NONE
+  Programming
+  Cad
+  Strategy
+  Mechanical
+  Media
+  BusinessOutreach
+  Pit
+}
+
+enum Profile_role {
+  MEMBER
+  LEAD
+  CAPTAIN
+  LEADERSHIP
+  COACH
+  MENTOR
+}
