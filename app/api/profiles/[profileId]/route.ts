@@ -35,7 +35,7 @@ export async function GET(
     return NextResponse.json(ret);
   } catch (error) {
     console.error("[PROFILE_ID_GET]", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }
 

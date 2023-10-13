@@ -3,6 +3,7 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Profile_role } from "@prisma/client";
 import {
   Dialog,
   DialogContent,
@@ -25,21 +26,32 @@ import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
 
 const formSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  imageUrl: z.string().optional(),
+  isRegistered: z.boolean().optional(),
+  isTravelCertified: z.boolean().optional(),
+  userBadges: z.array(z.string()).optional(), // Array of Badge IDs, Creates it all.
   phoneNumber: z.string().optional(),
   grade: z.number().max(4).min(1).optional(),
   graduationYear: z.number().optional(),
 });
 
-export const EditProfileSelfModal = () => {
+export const EditProfileModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
-  const isModalOpen = isOpen && type === "editProfileSelf";
-  let { profile } = data;
+  let { profile, accessor } = data;
+  const isModalOpen =
+    isOpen && type === "editProfile" && accessor?.role === Profile_role.COACH; // Only Coaches can Edit Other People And Change Everything
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
+      imageUrl: "",
+      isRegistered: false,
+      isTravelCertified: false,
+      userBadges: [],
       phoneNumber: "",
       grade: 0,
       graduationYear: 0,
@@ -92,7 +104,7 @@ export const EditProfileSelfModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="p-0 overflow-hidden bg-primary-foreground">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Edit Profile

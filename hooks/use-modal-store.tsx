@@ -9,6 +9,7 @@ export type ModalType =
 
 interface ModalData {
   badge?: Badge;
+  accessor?: Profile;
   profile?: Profile;
   apiUrl?: string;
   query?: Record<string, any>;
