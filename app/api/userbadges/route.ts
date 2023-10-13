@@ -67,6 +67,27 @@ export async function POST(req: Request) {
 
     const updates: any = [];
 
+    const existingUserBadges = await db.userBadge.findMany({
+      where: {
+        profileId,
+      },
+      select: {
+        badgeId: true,
+        id: true,
+      },
+    });
+
+    existingUserBadges.forEach(async (ub) => {
+      if (!badgeIds.includes(ub.badgeId)) {
+        const up = await db.userBadge.delete({
+          where: {
+            id: ub.id,
+          },
+        });
+        updates.push(up);
+      }
+    });
+
     badgeIds.forEach(async (badgeId) => {
       const badge = await db.badge.findUnique({
         where: {
@@ -76,13 +97,26 @@ export async function POST(req: Request) {
       if (!badge) {
         return new NextResponse("Badge ID invalid", { status: 400 });
       }
-      const updatedUserBadge = await db.userBadge.create({
-        data: {
-          profileId,
-          badgeId,
-        },
-      });
-      updates.push(updatedUserBadge);
+      let b = existingUserBadges.find((ub) => ub.badgeId == badgeId);
+      if (!b) {
+        const up = await db.profile.update({
+          where: {
+            id: profileId,
+          },
+          data: {
+            badges: {
+              create: {
+                badgeId,
+              },
+            },
+          },
+          include: {
+            badges: true,
+          },
+        });
+
+        updates.push(up);
+      }
     });
 
     return NextResponse.json(updates);

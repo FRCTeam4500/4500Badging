@@ -101,7 +101,7 @@ export const EditProfileSelfModal = () => {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="space-y-8 px-6">
+            <div className="space-y-2 px-6">
               <FormField
                 control={form.control}
                 name="phoneNumber"
@@ -165,7 +165,6 @@ export const EditProfileSelfModal = () => {
                 )}
               />
             </div>
-            <UserBadgeGrid modalType="editProfileSelf" />
             <DialogFooter className="grid grid-cols-1 px-6 py-4">
               <Button variant="default" disabled={isLoading}>
                 Save

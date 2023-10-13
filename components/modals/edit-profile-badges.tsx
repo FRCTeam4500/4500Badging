@@ -1,124 +1,163 @@
 "use client";
 
+import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { toast } from "@/components/ui/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { DialogDescription } from "@radix-ui/react-dialog";
-import { Toggle } from "@/components/ui/toggle";
-import { db } from "@/lib/db";
-import { initialProfile } from "@/lib/initial-profile";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/use-modal-store";
+import { useEffect } from "react";
+import { UserBadgeGrid } from "../badges/badge-grid";
 
-const FormSchema = z.object({
-  subteams: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: "Please select subteam.",
-  }),
+const formSchema = z.object({
+  name: z.string().optional(),
+  isRegistered: z.boolean().optional(),
+  isTravelCertified: z.boolean().optional(),
+  phoneNumber: z.string().optional(),
+  grade: z.number().max(4).min(1).optional(),
+  graduationYear: z.number().optional(),
+  imageUrl: z.string().optional(),
 });
 
-export async function CheckboxSubteamForm({ onUpload }) {
-  const profile = await initialProfile();
+export const EditProfileModal = () => {
+  const { isOpen, onClose, type, data } = useModal();
+  const router = useRouter();
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const isModalOpen = isOpen && type === "editProfile";
+  let { profile } = data;
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      subteams: [],
+      name: "",
+      phoneNumber: "",
+      grade: 0,
+      graduationYear: 0,
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data.subteams);
+  useEffect(() => {
+    if (profile) {
+      form.setValue("phoneNumber", profile?.phoneNumber);
+      form.setValue("grade", profile?.grade);
+      form.setValue("graduationYear", profile?.graduationYear);
+    }
+  }, [form, profile]);
 
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const isLoading = form.formState.isSubmitting;
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      (async () => {
+        console.log(profile?.id);
+        const rawResponse = await fetch(`/api/profiles/${profile?.id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            phoneNumber: values.phoneNumber,
+            grade: values.grade,
+            graduationYear: values.graduationYear,
+          }),
+        });
+        const content = await rawResponse.json();
+        console.log(content); // TODO: DO SOMETHING ELSE WITH IT
+        router.refresh();
+      })();
+
+      form.reset();
+      router.refresh();
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleClose = () => {
+    form.reset();
+    onClose();
+  };
 
   return (
-    <Dialog open>
-      <DialogContent className="w-[300px] text-center rounded-lg">
-        <DialogHeader className="text-left">
-          <DialogTitle>Choose Preffered Subsystems</DialogTitle>
-          <DialogDescription>
-            These can be changed later in settings.
-          </DialogDescription>
+    <Dialog open={isModalOpen} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader className="pt-8 px-6">
+          <DialogTitle className="text-2xl text-center font-bold">
+            Edit Profile
+          </DialogTitle>
         </DialogHeader>
-        <div>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="space-y-2 px-6">
               <FormField
                 control={form.control}
-                name="subteams"
-                render={() => (
-                  <FormItem className="grid grid-cols-2 gap-3 items-center">
-                    {subteams.map((item) => (
-                      <FormField
-                        key={item.id}
-                        control={form.control}
-                        name="subteams"
-                        render={({ field }) => {
-                          return (
-                            <div className="">
-                              <FormItem key={item.id} className="">
-                                <FormControl>
-                                  <Toggle
-                                    className="w-full"
-                                    pressed={field.value?.includes(item.id)}
-                                    value={item.id}
-                                    onPressedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([
-                                            ...field.value,
-                                            item.id,
-                                          ])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                              (value) => value !== item.id
-                                            )
-                                          );
-                                    }}
-                                  >
-                                    {item.label}
-                                  </Toggle>
-                                </FormControl>
-                              </FormItem>
-                            </div>
-                          );
-                        }}
+                name="grade"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
+                    <FormLabel className="uppercase text-center text-xs font-bold">
+                      Grade (1-4)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        className="border-0 w-16 text-center focus-visible:ring-0 focus-visible:ring-offset-0"
+                        placeholder="3"
+                        {...field}
+                        onChange={(e) => field.onChange(+e.target.value)}
                       />
-                    ))}
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button variant={"outline"} type="submit">
-                Submit
+              <FormField
+                control={form.control}
+                name="graduationYear"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-2 gap-3 place-items-center">
+                    <FormLabel className="uppercase text-center text-xs font-bold">
+                      Graduation Year (eg. 2025)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        className="border-0 w-16 text-center focus-visible:ring-0 focus-visible:ring-offset-0"
+                        placeholder="2025"
+                        {...field}
+                        onChange={(e) => field.onChange(+e.target.value)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <DialogFooter className="grid grid-cols-1 px-6 py-4">
+              <Button variant="default" disabled={isLoading}>
+                Save
               </Button>
-            </form>
-          </Form>
-        </div>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
-}
+};

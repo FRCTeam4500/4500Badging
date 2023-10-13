@@ -24,25 +24,24 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
+import { UserBadgeGrid } from "../badges/badge-grid";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255).optional(),
   imageUrl: z.string().optional(),
   isRegistered: z.boolean().optional(),
   isTravelCertified: z.boolean().optional(),
-  userBadges: z.array(z.string()).optional(), // Array of Badge IDs, Creates it all.
   phoneNumber: z.string().optional(),
   grade: z.number().max(4).min(1).optional(),
   graduationYear: z.number().optional(),
 });
 
 export const EditProfileModal = () => {
-  const { isOpen, onClose, type, data, onOpen } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
   let { profile, accessor } = data;
-  const isModalOpen =
-    isOpen && type === "editProfile" && accessor?.role === Profile_role.COACH; // Only Coaches can Edit Other People And Change Everything
+  const isModalOpen = isOpen && type === "editProfile"; // && accessor?.role === Profile_role.COACH; // Only Coaches can Edit Other People And Change Everything
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,7 +50,6 @@ export const EditProfileModal = () => {
       imageUrl: "",
       isRegistered: false,
       isTravelCertified: false,
-      userBadges: [],
       phoneNumber: "",
       grade: 0,
       graduationYear: 0,
@@ -83,6 +81,10 @@ export const EditProfileModal = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            name: values.name,
+            imageUrl: values.imageUrl,
+            isRegistered: values.isRegistered,
+            isTravelCertified: values.isTravelCertified,
             phoneNumber: values.phoneNumber,
             grade: values.grade,
             graduationYear: values.graduationYear,
@@ -117,6 +119,67 @@ export const EditProfileModal = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div className="space-y-8 px-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
+                    <FormLabel className="uppercase text-xs font-bold">
+                      Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        className="border-0 w-30 text-center focus-visible:ring-0"
+                        placeholder="Enter Full Name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <UserBadgeGrid modalType="editProfile" />
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
+                    <FormLabel className="uppercase text-xs font-bold">
+                      Phone Number
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        className="border-0 w-30 text-center focus-visible:ring-0"
+                        placeholder="Enter Phone Number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
+                    <FormLabel className="uppercase text-xs font-bold">
+                      Image URL (optional)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        className="border-0 w-30 text-center focus-visible:ring-0"
+                        placeholder="Enter Image URL"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="phoneNumber"

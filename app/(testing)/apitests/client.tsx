@@ -15,7 +15,7 @@ export function ClientA({ profile }: { profile: Profile }) {
     <div className="h-screen flex items-center justify-center">
       <Button
         onClick={() => {
-          onOpen("editProfileSelf", { profile: profile });
+          onOpen("editProfile", { profile: profile });
         }}
       >
         Update User

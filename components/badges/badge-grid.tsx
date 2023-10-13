@@ -1,5 +1,6 @@
 import { Toggle } from "@/components/ui/toggle";
 import { useModal } from "@/hooks/use-modal-store";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Badge, BadgeCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -27,10 +28,18 @@ const formSchema = z.object({
   badgeIds: z.array(z.string()).optional(),
 });
 
-export function UserBadgeGrid({ modalType }: { modalType: string }) {
+export function UserBadgeGrid({
+  className,
+  modalType,
+}: {
+  className?: string;
+  modalType: string;
+}) {
   const [open, setOpen] = useState(false);
   const [badges, setBadges] = useState<any>();
   const [userBadges, setUserBadges] = useState<any>();
+
+  const router = useRouter();
 
   const { onClose, data } = useModal();
   let { profile } = data;
@@ -98,7 +107,9 @@ export function UserBadgeGrid({ modalType }: { modalType: string }) {
     }
   }, [form, userBadges]);
 
-  const router = useRouter();
+  if (!badges) {
+    router.refresh();
+  }
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -130,75 +141,77 @@ export function UserBadgeGrid({ modalType }: { modalType: string }) {
   const isLoading = form.formState.isSubmitting;
 
   return (
-    <DropdownMenu open={open}>
-      <DropdownMenuTrigger className="bg-primary px-[0.5] py-1" asChild>
-        <Button variant="ghost" onClick={() => setOpen(true)} size="icon">
-          <BadgeCheck className="text-secondary" />
-          <span className="sr-only">Do Stuff</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              <ScrollArea>
-                <FormField
-                  control={form.control}
-                  name="badgeIds"
-                  render={({ field }) => (
-                    <FormItem
-                      key={field.name}
-                      className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                    >
-                      {badges.map((badge) => (
-                        <FormControl>
-                          <Toggle
-                            variant={"default"}
-                            pressed={field.value?.includes(badge.id)}
-                            value={badge.id}
-                            onPressedChange={(value) => {
-                              return value
-                                ? field.onChange([...field.value!, badge.id])
-                                : field.onChange(
-                                    field.value?.filter((v) => v !== badge.id)
-                                  );
-                            }}
-                            className="bg-primary px-[0.5] py-1"
-                          >
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Avatar>
-                                    <AvatarImage src={badge.imageUrl} />
-                                    <AvatarFallback className="bg-primary text-secondary">
-                                      <Badge />
-                                    </AvatarFallback>
-                                  </Avatar>
-                                </TooltipTrigger>
-                                <TooltipContent>{badge.name}</TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </Toggle>
-                        </FormControl>
-                      ))}
-                    </FormItem>
-                  )}
-                />
-              </ScrollArea>
-              <div className="grid grid-cols-1 mt-2">
-                <Button variant="default" disabled={isLoading}>
-                  Save
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </DropdownMenuItem>
-        {/* <DropdownMenuItem >
+    <div className={cn(className)}>
+      <DropdownMenu open={open}>
+        <DropdownMenuTrigger className="bg-primary px-[0.5] py-1" asChild>
+          <Button variant="ghost" onClick={() => setOpen(true)} size="icon">
+            <BadgeCheck className="text-secondary" />
+            <span className="sr-only">Do Stuff</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <ScrollArea>
+                  <FormField
+                    control={form.control}
+                    name="badgeIds"
+                    render={({ field }) => (
+                      <FormItem
+                        key={field.name}
+                        className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                      >
+                        {badges.map((badge) => (
+                          <FormControl>
+                            <Toggle
+                              variant={"default"}
+                              pressed={field.value!.includes(badge.id)}
+                              value={badge.id}
+                              onPressedChange={(value) => {
+                                return value
+                                  ? field.onChange([...field.value!, badge.id])
+                                  : field.onChange(
+                                      field.value?.filter((v) => v !== badge.id)
+                                    );
+                              }}
+                              className="bg-primary px-[0.5] py-1"
+                            >
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Avatar>
+                                      <AvatarImage src={badge.imageUrl} />
+                                      <AvatarFallback className="bg-primary text-secondary">
+                                        <Badge />
+                                      </AvatarFallback>
+                                    </Avatar>
+                                  </TooltipTrigger>
+                                  <TooltipContent>{badge.name}</TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </Toggle>
+                          </FormControl>
+                        ))}
+                      </FormItem>
+                    )}
+                  />
+                </ScrollArea>
+                <div className="grid grid-cols-1 mt-2">
+                  <Button variant="default" disabled={isLoading}>
+                    Save
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DropdownMenuItem>
+          {/* <DropdownMenuItem >
           <Button onClick={() => handleSelectionEnd()} variant={"default"}>
             Submit Selection
           </Button>
         </DropdownMenuItem> */}
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 }
