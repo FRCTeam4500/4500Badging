@@ -47,7 +47,6 @@ export async function PATCH(
     const profile: Profile | null = await currentProfile();
     const {
       name,
-      bio,
       imageUrl,
       grade,
       phoneNumber,
@@ -56,7 +55,6 @@ export async function PATCH(
       isRegistered,
       isTravelCertified,
       userBadges,
-      subteams,
       role,
     } = await req.json(); // Subteams are subteam types
 
@@ -87,6 +85,7 @@ export async function PATCH(
         create: userBadges.map((bad: UserBadge) => ({ badgeId: bad.badgeId })),
       };
     }
+    if (role) updateData.role = role;
 
     const updatedProfile = await db.profile.update({
       where: {
