@@ -1,5 +1,7 @@
-export default function Page() {
-  return (
-    <div className="h-screen flex items-center justify-center">Hello.</div>
-  );
+import { initialProfile } from "@/lib/initial-profile";
+import { ClientA } from "./client";
+
+export default async function Page() {
+  const profile = await initialProfile();
+  return <ClientA profile={profile} />;
 }
