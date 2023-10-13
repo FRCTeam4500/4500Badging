@@ -42,6 +42,8 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    console.log(req.json());
+
     const profile: Profile | null = await currentProfile();
 
     const {

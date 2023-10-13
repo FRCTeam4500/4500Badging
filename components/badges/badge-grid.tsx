@@ -141,14 +141,29 @@ export function UserBadgeGrid({
   const isLoading = form.formState.isSubmitting;
 
   return (
-    <div className={cn(className)}>
+    <div>
       <DropdownMenu open={open}>
-        <DropdownMenuTrigger className="bg-primary px-[0.5] py-1" asChild>
-          <Button variant="ghost" onClick={() => setOpen(true)} size="icon">
-            <BadgeCheck className="text-secondary" />
-            <span className="sr-only">Do Stuff</span>
-          </Button>
-        </DropdownMenuTrigger>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger
+                className={cn("bg-primary px-[0.5] py-1", className)}
+                asChild
+              >
+                <Button
+                  variant="default"
+                  onClick={() => setOpen(true)}
+                  size="icon"
+                >
+                  Badges&nbsp;
+                  <BadgeCheck className="text-secondary" />
+                  <span className="sr-only">Do Stuff</span>
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent>Edit Profile Badges</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>
             <Form {...form}>
@@ -159,7 +174,7 @@ export function UserBadgeGrid({
                     name="badgeIds"
                     key="badgeIds"
                     render={({ field }) => (
-                      <FormItem className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                      <FormItem className="grid  gap-3 grid-cols-4">
                         {badges.map((badge) => (
                           <FormField
                             key={badge.id}
@@ -167,51 +182,47 @@ export function UserBadgeGrid({
                             name="badgeIds"
                             render={({ field }) => {
                               return (
-                                <div>
-                                  <FormItem>
-                                    <FormControl>
-                                      <Toggle
-                                        variant={"default"}
-                                        pressed={field.value!.includes(
-                                          badge.id
-                                        )}
-                                        value={badge.id}
-                                        key={badge.id}
-                                        onPressedChange={(value) => {
-                                          return value
-                                            ? field.onChange([
-                                                ...field.value!,
-                                                badge.id,
-                                              ])
-                                            : field.onChange(
-                                                field.value?.filter(
-                                                  (v) => v !== badge.id
-                                                )
-                                              );
-                                        }}
-                                        className="bg-primary px-[0.5] py-1"
-                                      >
-                                        <TooltipProvider>
-                                          <Tooltip>
-                                            <TooltipTrigger asChild>
-                                              <Avatar>
-                                                <AvatarImage
-                                                  src={badge.imageUrl}
-                                                />
-                                                <AvatarFallback className="bg-primary text-secondary">
-                                                  <Badge />
-                                                </AvatarFallback>
-                                              </Avatar>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                              {badge.name}
-                                            </TooltipContent>
-                                          </Tooltip>
-                                        </TooltipProvider>
-                                      </Toggle>
-                                    </FormControl>
-                                  </FormItem>
-                                </div>
+                                <FormItem>
+                                  <FormControl>
+                                    <Toggle
+                                      variant={"default"}
+                                      className="bg-primary px-[0.5] py-1"
+                                      pressed={field.value!.includes(badge.id)}
+                                      value={badge.id}
+                                      key={badge.id}
+                                      onPressedChange={(value) => {
+                                        return value
+                                          ? field.onChange([
+                                              ...field.value!,
+                                              badge.id,
+                                            ])
+                                          : field.onChange(
+                                              field.value?.filter(
+                                                (v) => v !== badge.id
+                                              )
+                                            );
+                                      }}
+                                    >
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Avatar>
+                                              <AvatarImage
+                                                src={badge.imageUrl}
+                                              />
+                                              <AvatarFallback className="bg-primary text-secondary">
+                                                <Badge />
+                                              </AvatarFallback>
+                                            </Avatar>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            {badge.name}
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                    </Toggle>
+                                  </FormControl>
+                                </FormItem>
                               );
                             }}
                           />

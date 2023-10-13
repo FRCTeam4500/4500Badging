@@ -113,7 +113,7 @@ export const EditProfileSelfModal = () => {
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        className="border-0 w-30 text-center focus-visible:ring-0"
+                        className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2"
                         placeholder="Enter Phone Number"
                         {...field}
                       />
@@ -133,7 +133,7 @@ export const EditProfileSelfModal = () => {
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        className="border-0 w-16 text-center focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
                         placeholder="3"
                         {...field}
                         onChange={(e) => field.onChange(+e.target.value)}
@@ -154,7 +154,7 @@ export const EditProfileSelfModal = () => {
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        className="border-0 w-16 text-center focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
                         placeholder="2025"
                         {...field}
                         onChange={(e) => field.onChange(+e.target.value)}
