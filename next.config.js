@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
+  images: {
+    domains: [
+      "uploadthing.com",
+      "docs.google.com",
+      "images.unsplash.com",
+      "img.clerk.com",
+    ],
   },
 };
 
