@@ -9,7 +9,22 @@ export async function GET(
   { params }: { params: { profileId: string } }
 ) {
   try {
-    const profile = await db.profile.findUnique({
+
+    const profile: Profile | null = await currentProfile();
+
+    if (!profile) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    if (!params.profileId) {
+      return new NextResponse("Profile ID missing", { status: 400 });
+    }
+
+    if (profile.id != params.profileId && profile.role != Profile_role.COACH) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const ret = await db.profile.findUnique({
       where: {
         id: params.profileId,
       },
@@ -17,7 +32,7 @@ export async function GET(
         badges: true,
       },
     });
-    return NextResponse.json(profile);
+    return NextResponse.json(ret);
   } catch (error) {
     console.error("[PROFILE_ID_GET]", error);
     return new NextResponse("Internal Server Error", { status: 500 });
