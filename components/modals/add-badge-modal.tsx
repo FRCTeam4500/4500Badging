@@ -198,7 +198,7 @@ export const AddBadgeModal = () => {
                           <SelectGroup>
                             <SelectLabel>Subteams</SelectLabel>
                             {subteams.map((subteam) => (
-                              <SelectItem value={subteam.id}>
+                              <SelectItem key={subteam.id} value={subteam.id}>
                                 {subteam.label}
                               </SelectItem>
                             ))}
