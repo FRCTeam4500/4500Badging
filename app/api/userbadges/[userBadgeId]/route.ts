@@ -60,6 +60,7 @@ export async function PATCH(
         return new NextResponse("Badge ID invalid", { status: 400 });
       }
 			updateData.badgeId = badgeId;
+      updateData.badgeLevel = badge.level;
       updateData.badge = badge;
     }
     if (profileId) {

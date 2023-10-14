@@ -96,7 +96,6 @@ export const EditProfileModal = () => {
       })();
 
       form.reset();
-      router.refresh();
       onClose();
     } catch (error) {
       console.error(error);
@@ -204,27 +203,6 @@ export const EditProfileModal = () => {
                 control={form.control}
                 name="grade"
                 render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
-                    <FormLabel className="uppercase text-center text-xs font-bold">
-                      Grade (1-4)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
-                        placeholder="3"
-                        {...field}
-                        onChange={(e) => field.onChange(+e.target.value)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="grade"
-                render={({ field }) => (
                   <FormItem className="grid grid-cols-2 gap-3 place-items-center">
                     <FormLabel className="uppercase text-center text-xs font-bold">
                       Grade (9-12)
@@ -233,7 +211,7 @@ export const EditProfileModal = () => {
                       <Input
                         disabled={isLoading}
                         className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
-                        placeholder="2025"
+                        placeholder="11"
                         {...field}
                         onChange={(e) => field.onChange(+e.target.value)}
                       />
