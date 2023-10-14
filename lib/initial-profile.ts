@@ -8,9 +8,35 @@ export const initialProfile = async () => {
     return redirectToSignIn();
   }
 
+  function updateDifferencesToClerkUser(user, profile) {
+    const differences: any = {};
+    if (user.firstName + " " + user.lastName != profile.name)
+      differences.name = user.firstName + " " + user.lastName;
+
+    if (user.imageUrl != profile.imageUrl) differences.imageUrl = user.imageUrl;
+
+    if (user.emailAddresses[0].emailAddress != profile.email)
+      differences.email = user.emailAddresses[0].emailAddress;
+
+    const updated = db.profile.update({
+      where: {
+        userId: user.id,
+        id: profile.id,
+      },
+      data: {
+        ...differences,
+      },
+    });
+
+    return updated;
+  }
+
   const profileFromUser = await db.profile.findUnique({
     where: {
       userId: user.id,
+    },
+    include: {
+      badges: true,
     },
   });
 
@@ -18,10 +44,14 @@ export const initialProfile = async () => {
     where: {
       email: user.emailAddresses[0].emailAddress,
     },
+    include: {
+      badges: true,
+    },
   });
 
   if (profileFromUser) {
-    return profileFromUser;
+    const t = updateDifferencesToClerkUser(user, profileFromUser);
+    return t;
   }
 
   if (profileFromEmail) {
@@ -31,6 +61,9 @@ export const initialProfile = async () => {
       },
       data: {
         userId: user.id,
+      },
+      include: {
+        badges: true,
       },
     });
     return updatedProfile;
@@ -47,6 +80,9 @@ export const initialProfile = async () => {
       isRegistered: false,
       isTravelCertified: false,
       phoneNumber: "",
+    },
+    include: {
+      badges: true,
     },
   });
 

@@ -112,7 +112,7 @@ export function UserBadgeGrid({
     try {
       (async () => {
         console.log(profile?.id);
-        const rawResponse = await fetch(`/api/userbadges/`, {
+        const rawResponse = await fetch(`/api/userbadges`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -9,7 +9,6 @@ export async function GET(
   { params }: { params: { profileId: string } }
 ) {
   try {
-
     const profile: Profile | null = await currentProfile();
 
     if (!profile) {
@@ -45,6 +44,7 @@ export async function PATCH(
 ) {
   try {
     const profile: Profile | null = await currentProfile();
+
     const {
       name,
       imageUrl,
