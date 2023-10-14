@@ -1,3 +1,4 @@
+import { EditProfileSelfButton } from "@/components/edit-profile-self-button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,9 +14,10 @@ import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
 import { UserButton } from "@clerk/nextjs";
-import { Profile, Profile_role } from "@prisma/client";
+import { Profile, Profile_role, Subteams } from "@prisma/client";
 import { Badge } from "lucide-react";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 export default async function Home() {
   const profile: Profile = await initialProfile();
@@ -42,24 +44,155 @@ export default async function Home() {
     },
   });
 
-  console.log(profile);
+  let lv3Subteam: Subteams = Subteams.NONE;
+  let lv3Recieved: boolean = false;
+  let blueRecieved: boolean = false;
+  let scoutingRecieved: boolean = false;
+  let outreachRecieved: boolean = false;
+  let registrationRecieved: boolean = false;
+  let travelRecieved: boolean = false;
+
+  function checkAllComplete() {
+    for (let i = 0; i < profileBadges.length; i++) {
+      if (profileBadges[i].badge.name === "Outreach") {
+        outreachRecieved = true;
+        continue;
+      }
+      if (profileBadges[i].badge.name === "Scouting") {
+        scoutingRecieved = true;
+        continue;
+      }
+      if (profile.isRegistered) {
+        registrationRecieved = true;
+      }
+      if (profileBadges[i].badge.level === 3 && lv3Subteam === Subteams.NONE) {
+        lv3Recieved = true;
+        lv3Subteam = profileBadges[i].badge.subteamType;
+        continue;
+      }
+      if (
+        lv3Subteam != Subteams.NONE &&
+        profileBadges[i].badge.subteamType != lv3Subteam
+      ) {
+        blueRecieved = true;
+      }
+    }
+  }
+
+  checkAllComplete();
+
+  /** Update Prof */
+  if (
+    lv3Recieved &&
+    blueRecieved &&
+    scoutingRecieved &&
+    outreachRecieved &&
+    registrationRecieved
+  ) {
+    travelRecieved = true;
+    if (!profile.isTravelCertified) {
+      db.profile.update({
+        where: {
+          id: profile.id,
+        },
+        data: {
+          isTravelCertified: true,
+        },
+      });
+    }
+  }
 
   return (
     <div>
-      <div className="flex items-center justify-center">
+      <div className="flex mt-3 items-center justify-center">
         <UserButton />
-        <ModeToggle className="mt-2 ml-2" />
+        <ModeToggle className="ml-2" />
+        <EditProfileSelfButton profile={profile} />
       </div>
       <h1 className="text-2xl lg:text-4xl md:text-4xl p-4 mb-4 xl:text-4xl 2xl:text4xl font-bold text-center">
         Hello, {profile.name}
       </h1>
 
-      <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
-        Your Badges
-      </h2>
+      {/* Requirements :D */}
+      <div className="flex flex-col items-center justify-center mb-4">
+        <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
+          Your Requirements
+        </h2>
+
+        <div className="flex rounded-2xl shadow-2xl dark:shadow-white p-12 gap-5">
+          <Image
+            src={
+              registrationRecieved
+                ? "https://docs.google.com/drawings/d/e/2PACX-1vRmP_HkWIgWetZb4osHvPxHHonjQ0ZvIo9yvma0a88kK7pN997AM9w87nzbhV37ssOXFwf4c0-p6EVX/pub?w=708&h=708"
+                : "https://docs.google.com/drawings/d/e/2PACX-1vTK2icWGhuAt7ZtnMNdm69sHTQmZO2LOVWXn7GcVaNuTApgI_aObwCYh7eWdn5KDPA_p_i0ufmLygXK/pub?w=708&h=708"
+            }
+            alt="IsRegistered"
+            width={75}
+            height={75}
+          />
+
+          <Image
+            src={
+              lv3Recieved
+                ? "https://docs.google.com/drawings/d/e/2PACX-1vRmP_HkWIgWetZb4osHvPxHHonjQ0ZvIo9yvma0a88kK7pN997AM9w87nzbhV37ssOXFwf4c0-p6EVX/pub?w=708&h=708"
+                : "https://docs.google.com/drawings/d/e/2PACX-1vTK2icWGhuAt7ZtnMNdm69sHTQmZO2LOVWXn7GcVaNuTApgI_aObwCYh7eWdn5KDPA_p_i0ufmLygXK/pub?w=708&h=708"
+            }
+            alt="IsLv3"
+            width={75}
+            height={75}
+          />
+
+          <Image
+            src={
+              blueRecieved
+                ? "https://docs.google.com/drawings/d/e/2PACX-1vRmP_HkWIgWetZb4osHvPxHHonjQ0ZvIo9yvma0a88kK7pN997AM9w87nzbhV37ssOXFwf4c0-p6EVX/pub?w=708&h=708"
+                : "https://docs.google.com/drawings/d/e/2PACX-1vTK2icWGhuAt7ZtnMNdm69sHTQmZO2LOVWXn7GcVaNuTApgI_aObwCYh7eWdn5KDPA_p_i0ufmLygXK/pub?w=708&h=708"
+            }
+            alt="IsBlue"
+            width={75}
+            height={75}
+          />
+
+          <Image
+            src={
+              scoutingRecieved
+                ? "https://docs.google.com/drawings/d/e/2PACX-1vRmP_HkWIgWetZb4osHvPxHHonjQ0ZvIo9yvma0a88kK7pN997AM9w87nzbhV37ssOXFwf4c0-p6EVX/pub?w=708&h=708"
+                : "https://docs.google.com/drawings/d/e/2PACX-1vTK2icWGhuAt7ZtnMNdm69sHTQmZO2LOVWXn7GcVaNuTApgI_aObwCYh7eWdn5KDPA_p_i0ufmLygXK/pub?w=708&h=708"
+            }
+            alt="IsScouting"
+            width={75}
+            height={75}
+          />
+
+          <Image
+            src={
+              outreachRecieved
+                ? "https://docs.google.com/drawings/d/e/2PACX-1vRmP_HkWIgWetZb4osHvPxHHonjQ0ZvIo9yvma0a88kK7pN997AM9w87nzbhV37ssOXFwf4c0-p6EVX/pub?w=708&h=708"
+                : "https://docs.google.com/drawings/d/e/2PACX-1vTK2icWGhuAt7ZtnMNdm69sHTQmZO2LOVWXn7GcVaNuTApgI_aObwCYh7eWdn5KDPA_p_i0ufmLygXK/pub?w=708&h=708"
+            }
+            alt="IsOutreach"
+            width={75}
+            height={75}
+          />
+
+          <Image
+            src={
+              travelRecieved
+                ? "/prepared-to-travel-true.png"
+                : "/prepared-to-travel-false.png"
+            }
+            alt="IsTravel"
+            width={100}
+            height={100}
+          />
+        </div>
+      </div>
 
       {profileBadges.length > 0 ? (
         <div className="flex flex-col items-center justify-center">
+          <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
+            Your Badges
+          </h2>
           <div className="grid grid-cols-1 rounded-2xl shadow-2xl dark:shadow-white p-12 gap-3">
             <TooltipProvider>
               {profileBadges.map((badge) => (
@@ -86,9 +219,9 @@ export default async function Home() {
                             </span>
                             <div className="pl-6 text-indigo-400 group-hover:text-primary transition duration-200">
                               See Desc.{" "}
-                              <div className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+                              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
                                 -&gt;
-                              </div>
+                              </span>
                             </div>
                           </button>
                         </TooltipTrigger>

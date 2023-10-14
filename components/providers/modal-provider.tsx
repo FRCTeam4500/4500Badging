@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { EditProfileSelfModal } from "@/components/modals/edit-profile-self-modal";
+import { EditPhoneSelfModal } from "@/components/modals/edit-phone-self-modal";
 import { EditProfileModal } from "@/components/modals/edit-profile-modal";
 import { AddBadgeModal } from "@/components/modals/add-badge-modal";
 import { EditBadgeModal } from "../modals/edit-badge-modal";
@@ -19,7 +19,7 @@ export const ModalProvider = () => {
 
   return (
     <>
-      <EditProfileSelfModal />
+      <EditPhoneSelfModal />
       <EditProfileModal />
       <AddBadgeModal />
       <EditBadgeModal />

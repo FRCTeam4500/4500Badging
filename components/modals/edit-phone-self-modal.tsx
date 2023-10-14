@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -27,11 +28,9 @@ import { UserBadgeGrid } from "../badges/badge-grid";
 
 const formSchema = z.object({
   phoneNumber: z.string().optional(),
-  grade: z.number().max(4).min(1).optional(),
-  graduationYear: z.number().optional(),
 });
 
-export const EditProfileSelfModal = () => {
+export const EditPhoneSelfModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
@@ -42,16 +41,12 @@ export const EditProfileSelfModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       phoneNumber: "",
-      grade: 0,
-      graduationYear: 0,
     },
   });
 
   useEffect(() => {
     if (profile) {
       form.setValue("phoneNumber", profile?.phoneNumber);
-      form.setValue("grade", profile?.grade);
-      form.setValue("graduationYear", profile?.graduationYear);
     }
   }, [form, profile]);
 
@@ -69,8 +64,6 @@ export const EditProfileSelfModal = () => {
           },
           body: JSON.stringify({
             phoneNumber: values.phoneNumber,
-            grade: values.grade,
-            graduationYear: values.graduationYear,
           }),
         });
         const content = await rawResponse.json();
@@ -94,10 +87,14 @@ export const EditProfileSelfModal = () => {
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader className="pt-8 px-6">
+        <DialogHeader className="px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Edit Profile
+            Edit Phone Number
           </DialogTitle>
+          <DialogDescription>
+            If you wish to change your name or avatar image, click on the
+            profile instead of this button.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -122,50 +119,8 @@ export const EditProfileSelfModal = () => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="grade"
-                render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
-                    <FormLabel className="uppercase text-center text-xs font-bold">
-                      Grade (1-4)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
-                        placeholder="3"
-                        {...field}
-                        onChange={(e) => field.onChange(+e.target.value)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="graduationYear"
-                render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-3 place-items-center">
-                    <FormLabel className="uppercase text-center text-xs font-bold">
-                      Graduation Year (eg. 2025)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
-                        placeholder="2025"
-                        {...field}
-                        onChange={(e) => field.onChange(+e.target.value)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
-            <DialogFooter className="grid grid-cols-1 px-6 py-4">
+            <DialogFooter className="grid grid-cols-1 px-6 py-0">
               <Button variant="default" disabled={isLoading}>
                 Save
               </Button>

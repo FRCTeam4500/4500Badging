@@ -8,6 +8,9 @@ const nextConfig = {
       "img.clerk.com",
     ],
   },
+  compiler: {
+    styledComponents: true,
+  },
 };
 
 module.exports = nextConfig;
