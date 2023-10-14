@@ -159,7 +159,7 @@ export function UserBadgeGrid({
                     name="badgeIds"
                     key="badgeIds"
                     render={({ field }) => (
-                      <FormItem className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                      <FormItem className=" max-h-32 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                         {badges.map((badge) => (
                           <FormField
                             key={badge.id}
