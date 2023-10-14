@@ -1,5 +1,6 @@
 "use client";
 
+import { UserBadgeGrid } from "@/components/badges/badge-grid";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
@@ -11,21 +12,20 @@ export function ClientA({ profile }: { profile: Profile }) {
   const { onOpen } = useModal();
 
   const a = async () => {
-    console.log(profile.id);
     try {
       (async () => {
         console.log(profile?.id);
-        const rawResponse = await fetch(`/api/badges/create`, {
+        const rawResponse = await fetch(`/api/badges`, {
           method: "POST",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: "test",
+            name: "tefdsgst",
             level: 1,
-            description: "test",
-            imageUrl: "test",
+            description: "tsfdgest",
+            imageUrl: "tesdgst",
             subteamType: Subteams.Pit,
           }),
         });

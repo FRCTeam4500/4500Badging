@@ -40,9 +40,10 @@ export async function GET(req: Request) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
   try {
-    console.log(req.json());
+    const req = request.clone();
+    console.log(await req.clone().json());
 
     const profile: Profile | null = await currentProfile();
 
@@ -77,7 +78,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(updatedBadge);
   } catch (error) {
-    console.error("[BADGE_POST]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    console.log("[BADGE_POST]", error);
+    return NextResponse.json({ err: error, status: 500 });
   }
 }
