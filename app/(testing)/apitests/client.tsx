@@ -51,9 +51,6 @@ export function ClientA({ profile }: { profile: Profile }) {
       {/* <Button onClick={() => a()}>Add Badge</Button> */}
       {/* <UserBadgeGrid modalType="editProfile" /> */}
       {/* <AddBadgeModal /> */}
-      <Button onClick={() => onOpen("addBadge", {profile: profile})}>
-        Add Badge
-      </Button>
     </div>
   );
 }

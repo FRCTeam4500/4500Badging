@@ -3,7 +3,6 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Profile_role } from "@prisma/client";
 import {
   Dialog,
   DialogContent,
@@ -25,56 +24,88 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
 import { UserBadgeGrid } from "../badges/badge-grid";
+import { Textarea } from "../ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectValue,
+} from "../ui/select";
+import { SelectGroup, SelectTrigger } from "@radix-ui/react-select";
+import { Subteams } from "@prisma/client";
 
 const formSchema = z.object({
-  name: z.string().min(1).max(255).optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
   imageUrl: z.string().optional(),
-  isRegistered: z.boolean().optional(),
-  isTravelCertified: z.boolean().optional(),
-  phoneNumber: z.string().optional(),
-  grade: z.number().max(12).min(9).optional(),
-  graduationYear: z.number().optional(),
+  level: z.number().optional(),
+  subteam: z.string().optional(),
 });
 
-export const EditProfileModal = () => {
+const subteams = [
+  {
+    id: Subteams.Programming,
+    label: "Programming",
+  },
+  {
+    id: Subteams.Cad,
+    label: "Cad",
+  },
+  {
+    id: Subteams.Mechanical,
+    label: "Mechanical",
+  },
+  {
+    id: Subteams.BusinessOutreach,
+    label: "Business & Outreach",
+  },
+  {
+    id: Subteams.Media,
+    label: "Media",
+  },
+  {
+    id: Subteams.Pit,
+    label: "Pit",
+  },
+  {
+    id: Subteams.Strategy,
+    label: "Strategy",
+  },
+] as const;
+
+export const EditBadgeModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
-  let { profile, accessor } = data;
-  const isModalOpen = isOpen && type === "editProfile"; // && accessor?.role === Profile_role.COACH; // Only Coaches can Edit Other People And Change Everything
+  const { badge } = data;
+  const isModalOpen = isOpen && type === "editBadge";
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      description: "",
       imageUrl: "",
-      isRegistered: false,
-      isTravelCertified: false,
-      phoneNumber: "",
-      grade: 9,
-      graduationYear: 0,
+      level: 0,
+      subteam: Subteams.Programming,
     },
   });
 
   useEffect(() => {
-    if (profile) {
-      form.setValue("phoneNumber", profile?.phoneNumber);
-      form.setValue("grade", profile?.grade);
-      form.setValue("graduationYear", profile?.graduationYear);
-      form.setValue("name", profile?.name);
-      form.setValue("imageUrl", profile?.imageUrl);
-      form.setValue("isRegistered", profile?.isRegistered);
-      form.setValue("isTravelCertified", profile?.isTravelCertified);
-    }
-  }, [form, profile]);
+    form.setValue("name", badge?.name);
+    form.setValue("description", badge?.description);
+    form.setValue("imageUrl", badge?.imageUrl);
+    form.setValue("level", badge?.level);
+    form.setValue("subteam", badge?.subteamType);
+  }, [form, badge]);
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       (async () => {
-        console.log(profile?.id);
-        const rawResponse = await fetch(`/api/profiles/${profile?.id}`, {
+        const rawResponse = await fetch(`/api/badges/${badge?.id}`, {
           method: "PATCH",
           headers: {
             Accept: "application/json",
@@ -82,12 +113,10 @@ export const EditProfileModal = () => {
           },
           body: JSON.stringify({
             name: values.name,
+            level: values.level,
+            description: values.description,
             imageUrl: values.imageUrl,
-            isRegistered: values.isRegistered,
-            isTravelCertified: values.isTravelCertified,
-            phoneNumber: values.phoneNumber,
-            grade: values.grade,
-            graduationYear: values.graduationYear,
+            subteamType: values.subteam,
           }),
         });
         const content = await rawResponse.json();
@@ -110,10 +139,10 @@ export const EditProfileModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="p-0 overflow-hidden">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Edit Profile
+            Edit Badge
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -125,34 +154,13 @@ export const EditProfileModal = () => {
                 render={({ field }) => (
                   <FormItem className="grid grid-cols-2 gap-0 place-items-center">
                     <FormLabel className="uppercase text-xs font-bold">
-                      Name
+                      Badge Name
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
                         className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2"
-                        placeholder="Enter Full Name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <UserBadgeGrid modalType="editProfile" className="w-full" />
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
-                    <FormLabel className="uppercase text-xs font-bold">
-                      Phone Number
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2"
-                        placeholder="Enter Phone Number"
+                        placeholder="Enter Name"
                         {...field}
                       />
                     </FormControl>
@@ -164,15 +172,15 @@ export const EditProfileModal = () => {
                 control={form.control}
                 name="imageUrl"
                 render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
-                    <FormLabel className="uppercase text-xs font-bold">
-                      Image URL (optional)
+                  <FormItem className="grid grid-cols-2 gap-3 place-items-center">
+                    <FormLabel className="uppercase text-center text-xs font-bold">
+                      Image URL
                     </FormLabel>
                     <FormControl>
                       <Input
                         disabled={isLoading}
-                        className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2"
-                        placeholder="Enter Image URL"
+                        className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
+                        placeholder="www.example.com/image.png"
                         {...field}
                       />
                     </FormControl>
@@ -182,19 +190,30 @@ export const EditProfileModal = () => {
               />
               <FormField
                 control={form.control}
-                name="phoneNumber"
+                name="subteam"
                 render={({ field }) => (
                   <FormItem className="grid grid-cols-2 gap-0 place-items-center">
-                    <FormLabel className="uppercase text-xs font-bold">
-                      Phone Number
-                    </FormLabel>
+                    <FormLabel className="">Subteam</FormLabel>
                     <FormControl>
-                      <Input
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
                         disabled={isLoading}
-                        className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2"
-                        placeholder="Enter Phone Number"
-                        {...field}
-                      />
+                      >
+                        <SelectTrigger className="bg-muted rounded-2xl p-3">
+                          <SelectValue placeholder="Select Subteam" />
+                        </SelectTrigger>
+                        <SelectContent className="">
+                          <SelectGroup>
+                            <SelectLabel>Subteams</SelectLabel>
+                            {subteams.map((subteam) => (
+                              <SelectItem key={subteam.id} value={subteam.id}>
+                                {subteam.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -202,11 +221,11 @@ export const EditProfileModal = () => {
               />
               <FormField
                 control={form.control}
-                name="grade"
+                name="level"
                 render={({ field }) => (
                   <FormItem className="grid grid-cols-2 gap-0 place-items-center">
                     <FormLabel className="uppercase text-center text-xs font-bold">
-                      Grade (1-4)
+                      Level (eg. 3)
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -223,40 +242,18 @@ export const EditProfileModal = () => {
               />
               <FormField
                 control={form.control}
-                name="grade"
+                name="description"
                 render={({ field }) => (
                   <FormItem className="grid grid-cols-2 gap-3 place-items-center">
                     <FormLabel className="uppercase text-center text-xs font-bold">
-                      Grade (9-12)
+                      Description
                     </FormLabel>
                     <FormControl>
-                      <Input
+                      <Textarea
                         disabled={isLoading}
-                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
-                        placeholder="2025"
+                        className="border-0 resize-none hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
+                        placeholder="Enter Description"
                         {...field}
-                        onChange={(e) => field.onChange(+e.target.value)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="graduationYear"
-                render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-3 place-items-center">
-                    <FormLabel className="uppercase text-center text-xs font-bold">
-                      Graduation Year (eg. 2025)
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
-                        placeholder="2025"
-                        {...field}
-                        onChange={(e) => field.onChange(+e.target.value)}
                       />
                     </FormControl>
                     <FormMessage />

@@ -8,7 +8,6 @@ export async function GET(
   { params }: { params: { badgeId: string } }
 ) {
   try {
-
     if (!params.badgeId) {
       return new NextResponse("Badge ID missing", { status: 400 });
     }
@@ -29,17 +28,18 @@ export async function GET(
 }
 
 export async function PATCH(
-  req: Request,
+  request: Request,
   { params }: { params: { badgeId } }
 ) {
   try {
+    const req = request.clone();
     const profile: Profile | null = await currentProfile();
     const {
       name,
       level,
       description,
       imageUrl,
-      subteamType 
+      subteamType,
     } = await req.json(); // Subteams are subteam types
 
     if (!profile) {
@@ -50,7 +50,10 @@ export async function PATCH(
       return new NextResponse("Badge ID missing", { status: 400 });
     }
 
-    if (profile.role != Profile_role.COACH && profile.role != Profile_role.LEAD) {
+    if (
+      profile.role != Profile_role.COACH &&
+      profile.role != Profile_role.LEAD
+    ) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
