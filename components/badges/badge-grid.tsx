@@ -95,17 +95,14 @@ export function UserBadgeGrid({
       .catch((error) => {
         console.error(error);
       });
-  }, []);
 
-  // * Sets the default values of the form to the user's current badges
-  useEffect(() => {
     if (userBadges) {
       const userBadgeBadgeIds = userBadges.map(
         (userBadge) => userBadge.badgeId
       );
       form.setValue("badgeIds", userBadgeBadgeIds);
     }
-  }, [form, userBadges]);
+  }, []);
 
   if (!badges) {
     router.refresh();
@@ -147,7 +144,7 @@ export function UserBadgeGrid({
           <Tooltip>
             <TooltipTrigger asChild>
               <DropdownMenuTrigger
-                className={cn("bg-primary px-[0.5] py-1", className)}
+                className={cn("bg-primary px-[0.5]", className)}
                 asChild
               >
                 <Button
@@ -174,7 +171,7 @@ export function UserBadgeGrid({
                     name="badgeIds"
                     key="badgeIds"
                     render={({ field }) => (
-                      <FormItem className="grid  gap-3 grid-cols-4">
+                      <FormItem className="grid gap-3 grid-cols-4">
                         {badges.map((badge) => (
                           <FormField
                             key={badge.id}

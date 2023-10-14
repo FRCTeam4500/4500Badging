@@ -87,7 +87,7 @@ export const AddBadgeModal = () => {
       description: "",
       imageUrl: "",
       level: 0,
-      subteam: "",
+      subteam: Subteams.Programming,
     },
   });
 
@@ -186,7 +186,11 @@ export const AddBadgeModal = () => {
                   <FormItem className="grid grid-cols-2 gap-0 place-items-center">
                     <FormLabel className="">Subteam</FormLabel>
                     <FormControl>
-                      <Select disabled={isLoading} {...field}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isLoading}
+                      >
                         <SelectTrigger className="bg-muted rounded-2xl p-3">
                           <SelectValue placeholder="Select Subteam" />
                         </SelectTrigger>

@@ -43,7 +43,6 @@ export async function GET(req: Request) {
 export async function POST(request: Request) {
   try {
     const req = request.clone();
-    console.log(await req.clone().json());
 
     const profile: Profile | null = await currentProfile();
 
