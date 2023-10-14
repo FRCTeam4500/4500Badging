@@ -171,36 +171,37 @@ export function UserBadgeGrid({
                     name="badgeIds"
                     key="badgeIds"
                     render={({ field }) => (
-                      <FormItem className="grid gap-3 grid-cols-4">
-                        {badges.map((badge) => (
-                          <FormField
-                            key={badge.id}
-                            control={form.control}
-                            name="badgeIds"
-                            render={({ field }) => {
-                              return (
-                                <FormItem>
-                                  <FormControl>
-                                    <Toggle
-                                      variant={"default"}
-                                      className="bg-primary px-[0.5] py-1"
-                                      pressed={field.value!.includes(badge.id)}
-                                      value={badge.id}
-                                      key={badge.id}
-                                      onPressedChange={(value) => {
-                                        return value
-                                          ? field.onChange([
-                                              ...field.value!,
-                                              badge.id,
-                                            ])
-                                          : field.onChange(
-                                              field.value?.filter(
-                                                (v) => v !== badge.id
-                                              )
-                                            );
-                                      }}
-                                    >
-                                      <TooltipProvider>
+                      <FormItem className="grid gap-3 place-items-start grid-cols-4">
+                        <TooltipProvider>
+                          {badges.map((badge) => (
+                            <FormField
+                              key={badge.id}
+                              control={form.control}
+                              name="badgeIds"
+                              render={({ field }) => {
+                                return (
+                                  <FormItem>
+                                    <FormControl>
+                                      <Toggle
+                                        className="bg-primary px-[0.5]"
+                                        pressed={field.value!.includes(
+                                          badge.id
+                                        )}
+                                        value={badge.id}
+                                        key={badge.id}
+                                        onPressedChange={(value) => {
+                                          return value
+                                            ? field.onChange([
+                                                ...field.value!,
+                                                badge.id,
+                                              ])
+                                            : field.onChange(
+                                                field.value?.filter(
+                                                  (v) => v !== badge.id
+                                                )
+                                              );
+                                        }}
+                                      >
                                         <Tooltip>
                                           <TooltipTrigger asChild>
                                             <Avatar>
@@ -216,19 +217,19 @@ export function UserBadgeGrid({
                                             {badge.name}
                                           </TooltipContent>
                                         </Tooltip>
-                                      </TooltipProvider>
-                                    </Toggle>
-                                  </FormControl>
-                                </FormItem>
-                              );
-                            }}
-                          />
-                        ))}
+                                      </Toggle>
+                                    </FormControl>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </TooltipProvider>
                       </FormItem>
                     )}
                   />
                 </ScrollArea>
-                <div className="grid grid-cols-1 mt-2">
+                <div className="grid mt-2">
                   <Button variant="default" disabled={isLoading}>
                     Save
                   </Button>
