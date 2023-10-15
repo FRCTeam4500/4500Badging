@@ -9,11 +9,10 @@ export async function GET(
 ) {
   try {
     const profile: Profile | null = await currentProfile();
+
     const prams = params.page.split("&");
     const page = prams[0].split("=")[1];
     const pageSize = prams[1].split("=")[1];
-
-    console.log("[PROFILES_GET]", profile, params);
 
     const req = request.clone();
 
@@ -25,14 +24,31 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const ret = await db.profile.findMany({
-      include: {
-        badges: true,
-      },
+    const retProf = await db.profile.findMany({
       skip: (+page - 1) * +pageSize,
       take: +pageSize,
+      select: {
+        badges: {
+          select: {
+            badge: true,
+          },
+          orderBy: {
+            badge: {
+              level: "desc",
+            },
+          },
+        },
+        id: true,
+        name: true,
+        role: true,
+        grade: true,
+        graduationYear: true,
+        phoneNumber: true,
+        email: true,
+        imageUrl: true,
+      },
     });
-    return NextResponse.json(ret);
+    return NextResponse.json(retProf);
   } catch (error) {
     console.log("[PROFILES_GET]", error);
     return new NextResponse("Internal Error", { status: 500 });

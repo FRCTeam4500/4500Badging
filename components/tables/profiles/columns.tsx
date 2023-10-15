@@ -176,6 +176,20 @@ export const columns: ColumnDef<Member>[] = [
     },
   },
   {
+    accessorKey: "id",
+    header: "Id",
+    cell: ({ row }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => navigator.clipboard.writeText(row.original.id)}
+        >
+          Copy ID
+        </Button>
+      );
+    },
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const member = row.original;
@@ -195,12 +209,16 @@ export const columns: ColumnDef<Member>[] = [
             >
               Copy Profile Name
             </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(member.email)}
+            >
+              Copy Profile Email
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             {/* TODO: Update for dynamic routing */}
             <DropdownMenuItem
               onClick={() => (location.href = `/coach/profiles/${member.id}`)}
             >
-              {" "}
               {/* TODO: CHECK FOR ERROR*/}
               View Profile
             </DropdownMenuItem>

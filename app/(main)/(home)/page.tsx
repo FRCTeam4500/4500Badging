@@ -98,7 +98,7 @@ export default async function Home() {
   ) {
     travelRecieved = true;
     if (!profile.isTravelCertified) {
-      db.profile.update({
+      await db.profile.update({
         where: {
           id: profile.id,
         },

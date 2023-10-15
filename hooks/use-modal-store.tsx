@@ -5,7 +5,8 @@ export type ModalType =
   | "editBadge"
   | "editProfile"
   | "editProfileSelf"
-  | "addBadge";
+  | "addBadge"
+  | "addProfile";
 
 interface ModalData {
   badge?: Badge;

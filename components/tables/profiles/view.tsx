@@ -17,7 +17,9 @@ import { Badge } from "lucide-react";
  * @returns IM GONNA DO DUM DUM AND RETRIEVE EVERYTHING AT ONCE TODO: FIX!!!!
  */
 async function getData(): Promise<Member[]> {
-  const profiles: Profile[] = await db.profile.findMany({});
+  const profiles: Profile[] = await db.profile.findMany({
+    take: 10,
+  });
 
   /* Processing Chosen Profiles */
   const send: any = [];
@@ -90,13 +92,8 @@ export default async function ProfileTable() {
   const data = await getData();
 
   return (
-    <div>
-      <div className="container mx-auto pt-20">
-        <p className="text-lg font-semibold text-center">Team View</p>
-      </div>
-      <div className="container mx-auto py-4">
-        <DataTable columns={columns} data={data} />
-      </div>
+    <div className="container mx-auto py-4">
+      <DataTable columns={columns} data={data} />
     </div>
   );
 }

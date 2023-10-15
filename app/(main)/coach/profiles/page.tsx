@@ -1,9 +1,9 @@
-import ProfileTable from "@/components/tables/artifacts/view";
+import ProfileTable from "@/components/tables/profiles/view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 
 export default async function Page() {
-    const profileTable: JSX.Element = await ProfileTable()
+  const profileTable: JSX.Element = await ProfileTable();
   return (
     <div>
       <Suspense

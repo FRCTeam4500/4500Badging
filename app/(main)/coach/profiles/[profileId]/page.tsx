@@ -1,4 +1,5 @@
 import { EditProfileButton } from "@/components/edit-profile-button";
+import { MobileToggle } from "@/components/mobile-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
@@ -51,6 +52,7 @@ const ProfileIdPage = async ({ params }: ProfileIdPageProps) => {
   return (
     <div>
       <div className="text-md sticky top-0 font-semibold px-3 flex items-center h-12 bg-background border-neutral-200 dark:border-neutral-800 border-b-2">
+        <MobileToggle />
         <p className="font-semibold text-md text-black dark:text-white">
           Profile View
         </p>

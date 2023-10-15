@@ -11,6 +11,7 @@ import {
   SortingState,
   getSortedRowModel,
   VisibilityState,
+  makeStateUpdater,
 } from "@tanstack/react-table";
 
 import {
@@ -54,7 +55,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "lucide-react";
+import { Badge, Plus, RefreshCcw, RefreshCw } from "lucide-react";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -62,7 +64,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export async function fetchDelete({ id }: { id: string }) {
-  await fetch(`api/profiles/${id}`, {
+  await fetch(`/api/profiles/${id}`, {
     method: "DELETE",
   });
 }
@@ -193,46 +195,66 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  function parseData(data: any) {
+  async function parseData(d: any) {
+    const data = d;
+
+    if (!data) {
+      return;
+    }
+
     /* Processing Chosen Profiles */
     const send: any = [];
 
+    console.log(data);
+
+    let numBadges;
+    let accBadge;
+
     for (let i = 0; i < data.length; i++) {
       const profile = data[i];
-      const badges = data.badges;
-      const numBadges = badges.length;
-      const iterBadges = numBadges > 5 ? badges.slice(0, 5) : badges;
-      const accBadge = (
-        <div className="flex justify-center">
-          <TooltipProvider>
-            {iterBadges.map((badge) => {
-              return (
-                <Tooltip key={badge.badge.id}>
+      const badges = data[i].badges;
+      if (badges != null) {
+        numBadges = badges.length;
+        const iterBadges = numBadges > 5 ? badges.slice(0, 5) : badges;
+        accBadge = (
+          <div className="flex justify-center">
+            <TooltipProvider>
+              {iterBadges.map((badge) => {
+                return (
+                  <Tooltip key={badge.badge.id}>
+                    <TooltipTrigger asChild>
+                      <Avatar>
+                        <AvatarImage src={badge.badge.imageUrl} />
+                        <AvatarFallback>
+                          <Badge />
+                        </AvatarFallback>
+                      </Avatar>
+                    </TooltipTrigger>
+                    <TooltipContent>{badge.badge.name}</TooltipContent>
+                  </Tooltip>
+                );
+              })}
+              {numBadges > 5 && (
+                <Tooltip>
                   <TooltipTrigger asChild>
-                    <Avatar>
-                      <AvatarImage src={badge.badge.imageUrl} />
-                      <AvatarFallback>
-                        <Badge />
-                      </AvatarFallback>
-                    </Avatar>
+                    <button
+                      className="focus:outline-none"
+                      onClick={() =>
+                        (location.href = `/coach/profiles/${profile.id}`)
+                      }
+                    >
+                      <Avatar className="select-none">
+                        <AvatarFallback>+{numBadges - 5}</AvatarFallback>
+                      </Avatar>
+                    </button>
                   </TooltipTrigger>
-                  <TooltipContent>{badge.badge.name}</TooltipContent>
+                  <TooltipContent>View Profile For More</TooltipContent>
                 </Tooltip>
-              );
-            })}
-            {numBadges > 5 && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Avatar className="select-none">
-                    <AvatarFallback>+{numBadges - 5}</AvatarFallback>
-                  </Avatar>
-                </TooltipTrigger>
-                <TooltipContent>View Profile For More</TooltipContent>
-              </Tooltip>
-            )}
-          </TooltipProvider>
-        </div>
-      );
+              )}
+            </TooltipProvider>
+          </div>
+        );
+      }
       send.push({
         id: profile.id,
         name: profile.name,
@@ -245,9 +267,12 @@ export function DataTable<TData, TValue>({
       });
     }
 
+    console.log(send);
     // Fetch data from your API here.
     return send;
   }
+
+  const [update, setUpdate] = React.useState(false);
 
   React.useEffect(() => {
     if (initialRenderRef.current) {
@@ -256,22 +281,21 @@ export function DataTable<TData, TValue>({
     }
 
     const mm = async () => {
+      console.log(`/api/profiles/table/page=${page}&pageSize=${pageSize}`);
       const yeah = await fetch(
         `/api/profiles/table/page=${page}&pageSize=${pageSize}`,
         {
           method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
         }
       );
       const content = await yeah.json();
-      return content;
+      setInternalData(await parseData(content));
     };
 
-    setInternalData(parseData(mm()));
-  }, [page, pageSize]);
+    mm();
+  }, [page, pageSize, update]);
+
+  const { onOpen } = useModal();
 
   return (
     <div className="min-w-full -mx-2 flex-col">
@@ -285,16 +309,48 @@ export function DataTable<TData, TValue>({
           className="max-w-sm"
         />
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
+          <DropdownMenuTrigger className="ml-2" asChild>
             <Button variant="outline">Actions</Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuCheckboxItem
-              checked={table.getIsAllRowsSelected()}
-              onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
+            <DropdownMenuItem
+              onClick={() => {
+                let names = "";
+                table.getRowModel().rows?.length
+                  ? (names = table
+                      .getRowModel()
+                      .rows.map((row) =>
+                        row.getIsSelected()
+                          ? names.concat(row.getValue("name"))
+                          : null
+                      )
+                      .join("\n"))
+                  : toast({ title: "No Profiles" });
+                names != "" ? navigator.clipboard.writeText(names) : null;
+                names != "" ? toast({ title: "Copied Names" }) : null;
+              }}
             >
-              Select all
-            </DropdownMenuCheckboxItem>
+              Copy Names
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                let emails = "";
+                table.getRowModel().rows?.length
+                  ? (emails = table
+                      .getRowModel()
+                      .rows.map((row) =>
+                        row.getIsSelected()
+                          ? emails.concat(row.getValue("email"))
+                          : null
+                      )
+                      .join("\n"))
+                  : toast({ title: "No Profiles" });
+                emails != "" ? navigator.clipboard.writeText(emails) : null;
+                emails != "" ? toast({ title: "Copied Emails" }) : null;
+              }}
+            >
+              Copy Emails
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             {/* TODO: See if this functions prop */}
             <DropdownMenuItem
@@ -303,7 +359,7 @@ export function DataTable<TData, TValue>({
                   ? table.getRowModel().rows.map((row) =>
                       row.getIsSelected()
                         ? fetchDelete({
-                            id: "me",
+                            id: row.getValue("id"),
                           })
                             .then(() => {
                               toast({ title: "Profile deleted" });
@@ -313,13 +369,33 @@ export function DataTable<TData, TValue>({
                             })
                         : null
                     )
-                  : null;
+                  : toast({ title: "No Profiles" });
               }}
             >
-              Delete
+              Delete Selected
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <Button
+          size={"icon"}
+          variant="outline"
+          className="ml-2"
+          onClick={() => {
+            setUpdate(!update);
+          }}
+        >
+          <RefreshCw />
+        </Button>
+        <Button
+          size={"icon"}
+          variant="outline"
+          className="ml-2"
+          onClick={() => {
+            onOpen("addProfile");
+          }}
+        >
+          <Plus />
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

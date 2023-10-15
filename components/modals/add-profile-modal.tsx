@@ -3,7 +3,6 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Profile_role } from "@prisma/client";
 import {
   Dialog,
   DialogContent,
@@ -35,26 +34,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Toggle } from "../ui/toggle";
 import { Switch } from "../ui/switch";
 
 const formSchema = z.object({
-  name: z.string().min(1).max(255).optional(),
+  name: z.string().min(1).max(255),
   imageUrl: z.string().optional(),
+  email: z.string(),
   isRegistered: z.boolean().optional(),
-  isTravelCertified: z.boolean().optional(),
   phoneNumber: z.string().optional(),
-  grade: z.number().max(12).min(9).optional(),
+  grade: z.number().max(12).min(9),
   graduationYear: z.number().optional(),
   role: z.string().optional(),
 });
 
-export const EditProfileModal = () => {
-  const { isOpen, onClose, type, data } = useModal();
+export const AddProfileModal = () => {
+  const { isOpen, onClose, type } = useModal();
   const router = useRouter();
 
-  let { profile } = data;
-  const isModalOpen = isOpen && type === "editProfile"; // && accessor?.role === Profile_role.COACH; // Only Coaches can Edit Other People And Change Everything
+  const isModalOpen = isOpen && type === "addProfile"; // && accessor?.role === Profile_role.COACH; // Only Coaches can Edit Other People And Change Everything
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,37 +59,23 @@ export const EditProfileModal = () => {
       name: "",
       imageUrl: "",
       isRegistered: false,
-      isTravelCertified: false,
+      email: "",
       phoneNumber: "",
       grade: 9,
-      graduationYear: 0,
-      role: "",
+      graduationYear: 2025,
+      role: "MEMBER",
     },
   });
 
   const roles = ["COACH", "MEMBER", "MENTOR", "CAPTAIN", "LEADERSHIP", "LEAD"];
-
-  useEffect(() => {
-    if (profile) {
-      form.setValue("phoneNumber", profile?.phoneNumber);
-      form.setValue("grade", profile?.grade);
-      form.setValue("graduationYear", profile?.graduationYear);
-      form.setValue("name", profile?.name);
-      form.setValue("imageUrl", profile?.imageUrl);
-      form.setValue("isRegistered", profile?.isRegistered);
-      form.setValue("isTravelCertified", profile?.isTravelCertified);
-      form.setValue("role", profile?.role);
-    }
-  }, [form, profile]);
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       (async () => {
-        console.log(profile?.id);
-        const rawResponse = await fetch(`/api/profiles/${profile?.id}`, {
-          method: "PATCH",
+        const rawResponse = await fetch(`/api/profiles`, {
+          method: "POST",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -101,23 +84,23 @@ export const EditProfileModal = () => {
             name: values.name,
             imageUrl: values.imageUrl,
             isRegistered: values.isRegistered,
-            isTravelCertified: values.isTravelCertified,
+            email: values.email,
             phoneNumber: values.phoneNumber,
             grade: values.grade,
             graduationYear: values.graduationYear,
             role: values.role,
           }),
-        }).then((res) => {
-          router.refresh();
-          return res.json();
         });
-        console.log(rawResponse); // TODO: DO SOMETHING ELSE WITH IT
+        const content = await rawResponse.json();
+        console.log(content); // TODO: DO SOMETHING ELSE WITH IT
+        router.refresh();
       })();
 
       form.reset();
+      router.refresh();
       toast({
-        title: "Profile Updated",
-        description: `Profile, ${values.name} has been updated successfully.`,
+        title: "Profile Added",
+        description: `The profile, ${values.name} has been added to the database.`,
       });
       onClose();
     } catch (error) {
@@ -135,7 +118,7 @@ export const EditProfileModal = () => {
       <DialogContent className="p-0 overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Edit Profile
+            Add Profile
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
@@ -161,7 +144,26 @@ export const EditProfileModal = () => {
                   </FormItem>
                 )}
               />
-              <UserBadgeGrid modalType="editProfile" className="w-full" />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
+                    <FormLabel className="uppercase text-xs font-bold">
+                      Email
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2"
+                        placeholder="Enter Email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="phoneNumber"
