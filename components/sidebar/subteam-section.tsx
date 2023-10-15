@@ -10,15 +10,9 @@ interface SubteamSectionProps {
   label: string;
   role?: Profile_role;
   sectionType: "members";
-  subteam?: Subteam;
-};
+}
 
-export const SubteamSection = ({
-  label,
-  role,
-  sectionType,
-  subteam,
-}: SubteamSectionProps) => {
+export const SubteamSection = ({ label }: SubteamSectionProps) => {
   const { onOpen } = useModal();
 
   return (
@@ -27,5 +21,5 @@ export const SubteamSection = ({
         {label}
       </p>
     </div>
-  )
-}
+  );
+};
