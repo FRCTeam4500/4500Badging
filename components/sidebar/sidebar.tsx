@@ -39,7 +39,7 @@ export const SubteamSidebar = async () => {
     <div className="flex flex-col h-full text-primary w-full transition-transform ease-in">
       <SubteamHeader role={role} />
       <ScrollArea className="flex-1 px-3">
-        <div className="mt-2">
+        <div className="mt-2 mr-5">
           <SubteamSearch
             data={[
               {

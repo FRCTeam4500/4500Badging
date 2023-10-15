@@ -12,8 +12,7 @@ export function MobileToggle() {
           <Menu />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 flex gap-0">
-        <div className="max-w-[72]"></div>
+      <SheetContent side="left" className="p-0 flex w-60 gap-0">
         <SubteamSidebar />
       </SheetContent>
     </Sheet>

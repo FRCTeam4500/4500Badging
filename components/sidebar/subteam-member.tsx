@@ -40,7 +40,7 @@ export const SubteamMember = ({ profile }: SubteamMemberProps) => {
       <UserAvatar src={profile.imageUrl} className="h-8 w-8 md:h-8 md:w-8" />
       <p
         className={cn(
-          "font-semibold text-sm text-zinc-500 truncate group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition",
+          "font-semibold text-sm w-32 text-left overflow-x-hidden py-1 whitespace-nowrap overflow-ellipsis text-zinc-500 truncate group-hover:text-zinc-600 dark:text-zinc-400 dark:group-hover:text-zinc-300 transition",
           params?.memberId === profile.id &&
             "text-primary dark:text-zinc-200 dark:group-hover:text-white",
           profile.role === Profile_role.COACH && "admin-text",
