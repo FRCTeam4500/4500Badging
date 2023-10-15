@@ -207,7 +207,11 @@ export const columns: ColumnDef<Member>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {/* TODO: Update for dynamic routing */}
-            <DropdownMenuItem onClick={() => (location.href = `/coach/profiles/${member.id}`)}> // TODO: CHECK FOR ERROR
+            <DropdownMenuItem
+              onClick={() => (location.href = `/coach/profiles/${member.id}`)}
+            >
+              {" "}
+              {/* TODO: CHECK FOR ERROR*/}
               View Profile
             </DropdownMenuItem>
           </DropdownMenuContent>
