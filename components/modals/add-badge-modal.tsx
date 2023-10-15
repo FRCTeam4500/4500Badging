@@ -22,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
-import { useEffect } from "react";
 import { UserBadgeGrid } from "../badges/badge-grid";
 import { Textarea } from "../ui/textarea";
 import {
@@ -34,6 +33,7 @@ import {
 } from "../ui/select";
 import { SelectGroup, SelectTrigger } from "@radix-ui/react-select";
 import { Subteams } from "@prisma/client";
+import { toast } from "../ui/use-toast";
 
 const formSchema = z.object({
   name: z.string(),
@@ -117,6 +117,10 @@ export const AddBadgeModal = () => {
 
       form.reset();
       router.refresh();
+      toast({
+        title: "Badge Added",
+        description: `The badge, ${values.name} has been added to the database.`,
+      });
       onClose();
     } catch (error) {
       console.error(error);

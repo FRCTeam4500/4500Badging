@@ -34,6 +34,7 @@ import {
 } from "../ui/select";
 import { SelectGroup, SelectTrigger } from "@radix-ui/react-select";
 import { Subteams } from "@prisma/client";
+import { toast } from "../ui/use-toast";
 
 const formSchema = z.object({
   name: z.string().optional(),
@@ -126,6 +127,10 @@ export const EditBadgeModal = () => {
 
       form.reset();
       router.refresh();
+      toast({
+        title: "Badge Updated",
+        description: `Your badge, ${values.name} has been updated.`,
+      })
       onClose();
     } catch (error) {
       console.error(error);

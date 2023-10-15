@@ -56,6 +56,7 @@ export async function PATCH(
       isTravelCertified,
       userBadges,
       role,
+      isSelf
     } = await req.json(); // Subteams are subteam types
 
     if (!profile) {
@@ -66,7 +67,7 @@ export async function PATCH(
       return new NextResponse("Profile ID missing", { status: 400 });
     }
 
-    if (profile.id != params.profileId && profile.role != Profile_role.COACH) {
+    if (!isSelf && profile.role != Profile_role.COACH) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 

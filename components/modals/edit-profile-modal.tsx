@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
 import { UserBadgeGrid } from "../badges/badge-grid";
+import { toast } from "../ui/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255).optional(),
@@ -96,6 +97,11 @@ export const EditProfileModal = () => {
       })();
 
       form.reset();
+      router.refresh();
+      toast({
+        title: "Profile Updated",
+        description: `Profile, ${values.name} has been updated successfully.`,
+      });
       onClose();
     } catch (error) {
       console.error(error);
@@ -172,26 +178,6 @@ export const EditProfileModal = () => {
                         disabled={isLoading}
                         className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2"
                         placeholder="Enter Image URL"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="phoneNumber"
-                render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
-                    <FormLabel className="uppercase text-xs font-bold">
-                      Phone Number
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isLoading}
-                        className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2"
-                        placeholder="Enter Phone Number"
                         {...field}
                       />
                     </FormControl>

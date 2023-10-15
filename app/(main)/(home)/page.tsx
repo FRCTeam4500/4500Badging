@@ -15,7 +15,7 @@ import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
 import { UserButton } from "@clerk/nextjs";
 import { Profile, Profile_role, Subteams } from "@prisma/client";
-import { Badge } from "lucide-react";
+import { Badge, Medal } from "lucide-react";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import { ActionTooltip } from "@/components/action-tooltip";
@@ -50,6 +50,7 @@ export default async function Home() {
     },
   });
 
+  let isLead: boolean = profile.role === Profile_role.LEAD;
   let lv3Subteam: Subteams = Subteams.NONE;
   let lv3Recieved: boolean = false;
   let blueRecieved: boolean = false;
@@ -126,7 +127,7 @@ export default async function Home() {
         </h2>
 
         <TooltipProvider>
-          <div className="flex flex-col select-none justify-center md:flex-row lg:flex-row xl:flex-row 2xl:flex-row 3xl:flex-row rounded-2xl shadow-2xl dark:shadow-white p-12 gap-5">
+          <div className="flex flex-col select-none justify-center md:flex-row lg:flex-row xl:flex-row 2xl:flex-row 3xl:flex-row rounded-2xl shadow-2xl p-12 gap-5">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Image
@@ -255,7 +256,7 @@ export default async function Home() {
           <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
             Your Badges
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-2 rounded-2xl shadow-2xl dark:shadow-white p-12 gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-2 rounded-2xl shadow-2xl p-12 gap-3">
             <TooltipProvider>
               {profileBadges.map((badge) => (
                 <div key={badge.id} className="px-8 py-4">

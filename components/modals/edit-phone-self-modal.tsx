@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
 import { UserBadgeGrid } from "../badges/badge-grid";
+import { toast } from "../ui/use-toast";
 
 const formSchema = z.object({
   phoneNumber: z.string().optional(),
@@ -64,6 +65,7 @@ export const EditPhoneSelfModal = () => {
           },
           body: JSON.stringify({
             phoneNumber: values.phoneNumber,
+            isSelf: true,
           }),
         });
         const content = await rawResponse.json();
@@ -73,6 +75,10 @@ export const EditPhoneSelfModal = () => {
 
       form.reset();
       router.refresh();
+      toast({
+        title: "Phone Number Updated",
+        description: "Your phone number has been updated.",
+      });
       onClose();
     } catch (error) {
       console.error(error);
