@@ -28,19 +28,142 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTablePagination } from "@/components/tables/data-table-pagination";
+import { toast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
+} from "@radix-ui/react-icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
+export async function fetchDelete({ id }: { id: string }) {
+  await fetch(`api/profiles/${id}`, {
+    method: "DELETE",
+  });
+}
+
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [page, setPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+
+  function DataTablePagination<TData>() {
+    return (
+      <div className="flex items-center justify-between px-2 pt-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
+        <div className="flex items-center space-x-6 lg:space-x-8">
+          <div className="flex items-center space-x-2">
+            <p className="text-sm font-medium">Rows per page</p>
+            <Select
+              value={`${table.getState().pagination.pageSize}`}
+              onValueChange={(value) => {
+                table.setPageSize(Number(value));
+                setPageSize(Number(value));
+              }}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue
+                  placeholder={table.getState().pagination.pageSize}
+                />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50].map((pageSize) => (
+                  <SelectItem key={pageSize} value={`${pageSize}`}>
+                    {pageSize}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              className="hidden h-8 w-8 p-0 lg:flex"
+              onClick={() => {
+                table.setPageIndex(0);
+                setPage(0);
+              }}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <span className="sr-only">Go to first page</span>
+              <DoubleArrowLeftIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => {
+                table.previousPage();
+                setPage(page - 1);
+              }}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <span className="sr-only">Go to previous page</span>
+              <ChevronLeftIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="h-8 w-8 p-0"
+              onClick={() => {
+                table.nextPage();
+                setPage(page + 1);
+              }}
+              disabled={!table.getCanNextPage()}
+            >
+              <span className="sr-only">Go to next page</span>
+              <ChevronRightIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              className="hidden h-8 w-8 p-0 lg:flex"
+              onClick={() => {
+                table.setPageIndex(table.getPageCount() - 1);
+                setPage(table.getPageCount() - 1);
+              }}
+              disabled={!table.getCanNextPage()}
+            >
+              <span className="sr-only">Go to last page</span>
+              <DoubleArrowRightIcon className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -48,9 +171,11 @@ export function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [internalData, setInternalData] = React.useState(data);
+  const initialRenderRef = React.useRef(true);
 
   const table = useReactTable({
-    data,
+    data: internalData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -68,6 +193,86 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  function parseData(data: any) {
+    /* Processing Chosen Profiles */
+    const send: any = [];
+
+    for (let i = 0; i < data.length; i++) {
+      const profile = data[i];
+      const badges = data.badges;
+      const numBadges = badges.length;
+      const iterBadges = numBadges > 5 ? badges.slice(0, 5) : badges;
+      const accBadge = (
+        <div className="flex justify-center">
+          <TooltipProvider>
+            {iterBadges.map((badge) => {
+              return (
+                <Tooltip key={badge.badge.id}>
+                  <TooltipTrigger asChild>
+                    <Avatar>
+                      <AvatarImage src={badge.badge.imageUrl} />
+                      <AvatarFallback>
+                        <Badge />
+                      </AvatarFallback>
+                    </Avatar>
+                  </TooltipTrigger>
+                  <TooltipContent>{badge.badge.name}</TooltipContent>
+                </Tooltip>
+              );
+            })}
+            {numBadges > 5 && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Avatar className="select-none">
+                    <AvatarFallback>+{numBadges - 5}</AvatarFallback>
+                  </Avatar>
+                </TooltipTrigger>
+                <TooltipContent>View Profile For More</TooltipContent>
+              </Tooltip>
+            )}
+          </TooltipProvider>
+        </div>
+      );
+      send.push({
+        id: profile.id,
+        name: profile.name,
+        email: profile.email,
+        numBadges: numBadges,
+        badges: accBadge,
+        role: profile.role,
+        isRegistered: profile.isRegistered,
+        isTravelCertified: profile.isTravelCertified,
+      });
+    }
+
+    // Fetch data from your API here.
+    return send;
+  }
+
+  React.useEffect(() => {
+    if (initialRenderRef.current) {
+      initialRenderRef.current = false;
+      return;
+    }
+
+    const mm = async () => {
+      const yeah = await fetch(
+        `/api/profiles/table/page=${page}&pageSize=${pageSize}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const content = await yeah.json();
+      return content;
+    };
+
+    setInternalData(parseData(mm()));
+  }, [page, pageSize]);
+
   return (
     <div className="min-w-full -mx-2 flex-col">
       <div className="flex items-center justify-between py-4">
@@ -79,6 +284,42 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Actions</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuCheckboxItem
+              checked={table.getIsAllRowsSelected()}
+              onCheckedChange={(value) => table.toggleAllRowsSelected(!!value)}
+            >
+              Select all
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuSeparator />
+            {/* TODO: See if this functions prop */}
+            <DropdownMenuItem
+              onClick={() => {
+                table.getRowModel().rows?.length
+                  ? table.getRowModel().rows.map((row) =>
+                      row.getIsSelected()
+                        ? fetchDelete({
+                            id: "me",
+                          })
+                            .then(() => {
+                              toast({ title: "Profile deleted" });
+                            })
+                            .catch(() => {
+                              toast({ title: "Error deleting profile" });
+                            })
+                        : null
+                    )
+                  : null;
+              }}
+            >
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -156,7 +397,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination />
     </div>
   );
 }

@@ -17,7 +17,7 @@ import { Badge } from "lucide-react";
  * @returns IM GONNA DO DUM DUM AND RETRIEVE EVERYTHING AT ONCE TODO: FIX!!!!
  */
 async function getData(): Promise<Member[]> {
-  const profiles: Profile[] = await db.profile.findMany();
+  const profiles: Profile[] = await db.profile.findMany({});
 
   /* Processing Chosen Profiles */
   const send: any = [];

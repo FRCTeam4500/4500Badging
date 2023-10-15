@@ -38,6 +38,38 @@ export async function GET(
   }
 }
 
+export async function DELETE(
+  req: Request,
+  { params }: { params: { profileId: string } }
+) {
+  try {
+    const profile: Profile | null = await currentProfile();
+
+    if (!profile) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    if (!params.profileId) {
+      return new NextResponse("Profile ID missing", { status: 400 });
+    }
+
+    if (profile.role != Profile_role.COACH) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const ret = await db.profile.delete({
+      where: {
+        id: params.profileId,
+      },
+    });
+
+    return NextResponse.json(ret);
+  } catch (error) {
+    console.error("[PROFILE_ID_DELETE]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: { profileId: string } }

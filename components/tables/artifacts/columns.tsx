@@ -10,10 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  ArrowUpDown,
-  MoreHorizontal,
-} from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
 import Link from "next/link";
@@ -66,7 +63,7 @@ export const columns: ColumnDef<Member>[] = [
     },
     cell: ({ row }) => {
       return (
-        <Link href={"/team/profile/" + row.original.id}>
+        <Link href={"/coach/profiles/" + row.original.id}>
           <div className="border-collapse">{row.original.name}</div>
         </Link>
       );
