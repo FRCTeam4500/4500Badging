@@ -11,6 +11,7 @@ import { SubteamHeader } from "./subteam-header";
 import { SubteamSearch } from "./subteam-search";
 import { SubteamSection } from "./subteam-section";
 import { SubteamMember } from "./subteam-member";
+import { BackToHome } from "./back-to-home";
 
 const roleIconMap = {
   [Profile_role.MEMBER]: null,
@@ -39,7 +40,8 @@ export const SubteamSidebar = async () => {
     <div className="flex flex-col h-full text-primary w-full transition-transform ease-in">
       <SubteamHeader role={role} />
       <ScrollArea className="flex-1 px-3">
-        <div className="mt-2 mr-5">
+        <div className="mt-2 flex flex-col">
+          <BackToHome />
           <SubteamSearch
             data={[
               {

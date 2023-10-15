@@ -65,6 +65,11 @@
     --ring: 212.7 26.8% 83.9%;
   }
 }
+
+@font-face {
+    font-family: "Athene";
+    src: url("../public/Athene.otf");
+}
  
 @layer base {
   * {

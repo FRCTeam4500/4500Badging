@@ -23,16 +23,17 @@ import { ActionTooltip } from "@/components/action-tooltip";
 export default async function Home() {
   const profile: Profile = await initialProfile();
 
-  // if (profile.role === Profile_role.COACH) {
-  //   redirect("/coach");
-  // }
+  if (profile.role === Profile_role.COACH) {
+    redirect("/coach");
+  }
 
-  // if (
-  //   profile.role === Profile_role.LEAD ||
-  //   profile.role === Profile_role.CAPTAIN
-  // ) {
-  //   redirect("/lead");
-  // }
+  if (
+    profile.role === Profile_role.LEAD ||
+    profile.role === Profile_role.CAPTAIN ||
+    profile.role === Profile_role.MENTOR
+  ) {
+    redirect("/lead");
+  }
 
   /* TODO: ADD CHECKS FOR OTHER ROLES, If we need different views */
 
