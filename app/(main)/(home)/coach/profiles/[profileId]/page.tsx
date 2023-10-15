@@ -1,13 +1,20 @@
-"use client";
-
+import { EditProfileButton } from "@/components/edit-profile-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useModal } from "@/hooks/use-modal-store";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
 import { redirectToSignIn } from "@clerk/nextjs";
-import { Badge, Profile } from "@prisma/client";
-import { Edit2 } from "lucide-react";
+import { Profile, Profile_role, UserBadge } from "@prisma/client";
+import { Badge, Edit2 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -17,97 +24,116 @@ interface ProfileIdPageProps {
   };
 }
 
-const ProfileIdPage = ({ params }: ProfileIdPageProps) => {
-  const { onOpen } = useModal();
-  const [accessor, setAccessor] = useState<Profile | undefined>();
-  const [profile, setProfile] = useState<Profile | undefined>();
-  const [userBadges, setUserBadges] = useState<Badge[] | undefined>();
-
-  useEffect(() => {
-    const getAccessor = async () => {
-      return await fetch(`/api/profiles/self`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      });
-    };
-
-    const getProfile = async () => {
-      return await fetch(`/api/profiles/${params.profileId}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-    };
-
-    const getUserBadges = async () => {
-      return await fetch(`/api/userbadges/${profile?.id}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-    };
-
-    getAccessor()
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            setAccessor(data);
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    getProfile()
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            setProfile(data);
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    getUserBadges()
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            setUserBadges(data);
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
+const ProfileIdPage = async ({ params }: ProfileIdPageProps) => {
+  const accessor = await currentProfile();
+  const profile = await db.profile.findUnique({
+    where: {
+      id: params.profileId,
+    },
+  });
+  if (!accessor) {
+    redirectToSignIn();
+  }
+  if (accessor?.role != Profile_role.COACH) {
+    redirect("/");
+  }
+  if (!profile) {
+    redirect("/coach/");
+  }
+  const badges = await db.userBadge.findMany({
+    where: {
+      profileId: profile.id,
+    },
+    include: {
+      badge: true,
+    },
+    orderBy: {
+      badge: {
+        level: "desc",
+      },
+    },
+  });
   return (
     <div>
       <div className="text-md sticky top-0 font-semibold px-3 flex items-center h-12 bg-background border-neutral-200 dark:border-neutral-800 border-b-2">
         <p className="font-semibold text-md text-black dark:text-white">
-          {profile?.name}
+          Profile View
         </p>
-        <Button
-          className="ml-auto"
-          variant={"ghost"}
-          onClick={() => {
-            onOpen("editProfile", { profile: profile });
-          }}
-        >
-          <Edit2 />
-        </Button>
+        <EditProfileButton profile={profile} />
       </div>
-      <div className="m-5">You are on {profile?.name + "'s page! :)"}</div>
-      <div className="m-5"></div>
+      <div className="flex flex-col items-center mt-4 mx-14 p-4 justify-center">
+        <div>
+          <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
+            Profile Info
+          </h2>
+          <h3 className="text-md text-foreground text-left">
+            NAME: {profile.name}
+          </h3>
+          <h3 className="text-md text-foreground text-left">
+            EMAIL: {profile.email}
+          </h3>
+          <h3 className="text-md text-foreground text-left">
+            ROLE: {profile.role}
+          </h3>
+          <h3 className="text-md text-foreground text-left">
+            GRADE: {profile.grade}
+          </h3>
+          <h3 className="text-md text-foreground text-left">
+            GRADUATION YEAR: {profile.graduationYear}
+          </h3>
+        </div>
+      </div>
+      <div className="flex flex-col mt-4 items-center justify-center">
+        <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
+          Profile Badges
+        </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 3xl:grid-cols-2 rounded-2xl shadow-2xl p-12 gap-3">
+          <TooltipProvider>
+            {badges.map((badge) => (
+              <div key={badge.id} className="px-8 py-4">
+                <div className="grid gap-8 items-start justify-center">
+                  <div className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-600 to-blue-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button className="relative px-7 py-4 bg-secondary rounded-lg leading-none flex felx-col items-center divide-x divide-gray-600">
+                          <span className="flex w-60 items-center space-x-5">
+                            <div>{" " + badge.badge.level}</div>
+                            <Avatar>
+                              <AvatarImage
+                                src={badge.badge.imageUrl}
+                                alt={badge.badge.name}
+                              />
+                              <AvatarFallback>
+                                <Badge size={48} />
+                              </AvatarFallback>
+                            </Avatar>
+                            <span className="pr-2 w-36 text-left overflow-x-hidden py-1 whitespace-nowrap overflow-ellipsis">
+                              {badge.badge.name}
+                            </span>
+                          </span>
+                          <div className="pl-6 text-indigo-400 group-hover:text-primary transition duration-200">
+                            See Desc.{" "}
+                            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
+                              -&gt;
+                            </span>
+                          </div>
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <div className="flex flex-col p-2 max-w-sm items-center justify-center">
+                          {badge.badge.subteamType}&apos;s Level{" "}
+                          {badge.badge.level} Badge
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </TooltipProvider>
+        </div>
+      </div>
     </div>
   );
 };

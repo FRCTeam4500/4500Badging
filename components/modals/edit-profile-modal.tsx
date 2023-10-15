@@ -90,14 +90,14 @@ export const EditProfileModal = () => {
             grade: values.grade,
             graduationYear: values.graduationYear,
           }),
+        }).then((res) => {
+          router.refresh();
+          return res.json();
         });
-        const content = await rawResponse.json();
-        console.log(content); // TODO: DO SOMETHING ELSE WITH IT
-        router.refresh();
+        console.log(rawResponse); // TODO: DO SOMETHING ELSE WITH IT
       })();
 
       form.reset();
-      router.refresh();
       toast({
         title: "Profile Updated",
         description: `Profile, ${values.name} has been updated successfully.`,
