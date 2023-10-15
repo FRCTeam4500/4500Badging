@@ -2,9 +2,8 @@ import ProfileTable from "@/components/tables/artifacts/view";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 
-export default function Page() {
-  // const badges = await db.badge.findMany();
-
+export default async function Page() {
+    const profileTable: JSX.Element = await ProfileTable()
   return (
     <div>
       <Suspense
@@ -14,7 +13,7 @@ export default function Page() {
           </div>
         }
       >
-        <ProfileTable />
+        {profileTable}
       </Suspense>
     </div>
   );

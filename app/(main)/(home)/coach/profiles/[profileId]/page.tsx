@@ -1,22 +1,17 @@
 import { EditProfileButton } from "@/components/edit-profile-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useModal } from "@/hooks/use-modal-store";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { initialProfile } from "@/lib/initial-profile";
 import { redirectToSignIn } from "@clerk/nextjs";
-import { Profile, Profile_role, UserBadge } from "@prisma/client";
-import { Badge, Edit2 } from "lucide-react";
+import { Profile_role } from "@prisma/client";
+import { Badge } from "lucide-react";
 import { redirect } from "next/navigation";
-import { useEffect, useState } from "react";
 
 interface ProfileIdPageProps {
   params: {

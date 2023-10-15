@@ -26,6 +26,15 @@ import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
 import { UserBadgeGrid } from "../badges/badge-grid";
 import { toast } from "../ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255).optional(),
@@ -35,13 +44,14 @@ const formSchema = z.object({
   phoneNumber: z.string().optional(),
   grade: z.number().max(12).min(9).optional(),
   graduationYear: z.number().optional(),
+  role: z.string().optional(),
 });
 
 export const EditProfileModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const router = useRouter();
 
-  let { profile, accessor } = data;
+  let { profile } = data;
   const isModalOpen = isOpen && type === "editProfile"; // && accessor?.role === Profile_role.COACH; // Only Coaches can Edit Other People And Change Everything
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,8 +64,11 @@ export const EditProfileModal = () => {
       phoneNumber: "",
       grade: 9,
       graduationYear: 0,
+      role: "",
     },
   });
+
+  const roles = ["COACH", "MEMBER", "MENTOR", "CAPTAIN", "LEADERSHIP", "LEAD"];
 
   useEffect(() => {
     if (profile) {
@@ -66,6 +79,7 @@ export const EditProfileModal = () => {
       form.setValue("imageUrl", profile?.imageUrl);
       form.setValue("isRegistered", profile?.isRegistered);
       form.setValue("isTravelCertified", profile?.isTravelCertified);
+      form.setValue("role", profile?.role);
     }
   }, [form, profile]);
 
@@ -89,6 +103,7 @@ export const EditProfileModal = () => {
             phoneNumber: values.phoneNumber,
             grade: values.grade,
             graduationYear: values.graduationYear,
+            role: values.role,
           }),
         }).then((res) => {
           router.refresh();
@@ -180,6 +195,37 @@ export const EditProfileModal = () => {
                         placeholder="Enter Image URL"
                         {...field}
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
+                    <FormLabel className="">Role</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isLoading}
+                      >
+                        <SelectTrigger className="bg-muted rounded-2xl p-3">
+                          <SelectValue placeholder="Select Subteam" />
+                        </SelectTrigger>
+                        <SelectContent className="">
+                          <SelectGroup>
+                            <SelectLabel>Roles</SelectLabel>
+                            {roles.map((role) => (
+                              <SelectItem key={role} value={role}>
+                                {role}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
