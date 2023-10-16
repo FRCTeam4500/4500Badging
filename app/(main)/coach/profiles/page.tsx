@@ -4,6 +4,7 @@ import { Suspense } from "react";
 
 export default async function Page() {
   const profileTable: JSX.Element = await ProfileTable();
+  // const testTable: JSX.Element = await LeadTable();
   return (
     <div>
       <Suspense
