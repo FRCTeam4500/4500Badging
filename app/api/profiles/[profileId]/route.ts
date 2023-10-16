@@ -88,7 +88,7 @@ export async function PATCH(
       isTravelCertified,
       userBadges,
       role,
-      isSelf
+      isSelf,
     } = await req.json(); // Subteams are subteam types
 
     if (!profile) {
@@ -108,11 +108,12 @@ export async function PATCH(
     if (name) updateData.name = name;
     if (imageUrl) updateData.imageUrl = imageUrl;
     if (phoneNumber) updateData.phoneNumber = phoneNumber;
-    if (grade) updateData.grade = grade;
+    if (grade) updateData.grade = +grade;
     if (email) updateData.email = email;
-    if (graduationYear) updateData.graduationYear = graduationYear;
-    if (isRegistered) updateData.isRegistered = isRegistered;
-    if (isTravelCertified) updateData.isTravelCertified = isTravelCertified;
+    if (graduationYear) updateData.graduationYear = +graduationYear;
+    if (isRegistered) updateData.isRegistered = isRegistered == "true";
+    if (isTravelCertified)
+      updateData.isTravelCertified = isTravelCertified == "true";
     if (userBadges) {
       updateData.userBadges = {
         create: userBadges.map((bad: UserBadge) => ({ badgeId: bad.badgeId })),
@@ -132,6 +133,6 @@ export async function PATCH(
     return NextResponse.json(updatedProfile);
   } catch (error) {
     console.error("[PROFILE_ID_PATCH]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return new NextResponse("Internal Error" + error, { status: 500 });
   }
 }

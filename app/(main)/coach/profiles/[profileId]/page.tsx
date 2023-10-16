@@ -78,6 +78,12 @@ const ProfileIdPage = async ({ params }: ProfileIdPageProps) => {
           <h3 className="text-md text-foreground text-left">
             GRADUATION YEAR: {profile.graduationYear}
           </h3>
+          <h3 className="text-md text-foreground text-left">
+            IS REGISTERED: {profile.isRegistered.toString()}
+          </h3>
+          <h3 className="text-md text-foreground text-left">
+            IS TRAVEL CERTIFIED: {profile.isTravelCertified.toString()}
+          </h3>
         </div>
       </div>
       <div className="flex flex-col mt-4 items-center justify-center">

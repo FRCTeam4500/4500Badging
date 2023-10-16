@@ -27,13 +27,13 @@ export default async function Home() {
     redirect("/coach");
   }
 
-  if (
-    profile.role === Profile_role.LEAD ||
-    profile.role === Profile_role.CAPTAIN ||
-    profile.role === Profile_role.MENTOR
-  ) {
-    redirect("/lead");
-  }
+  // if (
+  //   profile.role === Profile_role.LEAD ||
+  //   profile.role === Profile_role.CAPTAIN ||
+  //   profile.role === Profile_role.MENTOR
+  // ) {
+  //   redirect("/lead");
+  // }
 
   /* TODO: ADD CHECKS FOR OTHER ROLES, If we need different views */
 
@@ -51,7 +51,6 @@ export default async function Home() {
     },
   });
 
-  let isLead: boolean = profile.role === Profile_role.LEAD;
   let lv3Subteam: Subteams = Subteams.NONE;
   let lv3Recieved: boolean = false;
   let blueRecieved: boolean = false;

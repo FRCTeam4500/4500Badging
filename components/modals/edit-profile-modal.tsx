@@ -14,6 +14,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -37,15 +38,15 @@ import {
 } from "../ui/select";
 import { Toggle } from "../ui/toggle";
 import { Switch } from "../ui/switch";
+import { DropdownMenu } from "../ui/dropdown-menu";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255).optional(),
   imageUrl: z.string().optional(),
   isRegistered: z.boolean().optional(),
-  isTravelCertified: z.boolean().optional(),
   phoneNumber: z.string().optional(),
-  grade: z.number().max(12).min(9).optional(),
-  graduationYear: z.number().optional(),
+  grade: z.string().optional(),
+  graduationYear: z.string().optional(),
   role: z.string().optional(),
 });
 
@@ -62,25 +63,25 @@ export const EditProfileModal = () => {
       name: "",
       imageUrl: "",
       isRegistered: false,
-      isTravelCertified: false,
       phoneNumber: "",
-      grade: 9,
-      graduationYear: 0,
-      role: "",
+      grade: "9",
+      graduationYear: "2027",
+      role: Profile_role.MEMBER,
     },
   });
 
   const roles = ["COACH", "MEMBER", "MENTOR", "CAPTAIN", "LEADERSHIP", "LEAD"];
+  const grades = ["9", "10", "11", "12"];
+  const graduationYears = ["2024", "2025", "2026", "2027"];
 
   useEffect(() => {
     if (profile) {
       form.setValue("phoneNumber", profile?.phoneNumber);
-      form.setValue("grade", profile?.grade);
-      form.setValue("graduationYear", profile?.graduationYear);
+      form.setValue("grade", profile?.grade.toString());
+      form.setValue("graduationYear", profile?.graduationYear.toString());
       form.setValue("name", profile?.name);
       form.setValue("imageUrl", profile?.imageUrl);
       form.setValue("isRegistered", profile?.isRegistered);
-      form.setValue("isTravelCertified", profile?.isTravelCertified);
       form.setValue("role", profile?.role);
     }
   }, [form, profile]);
@@ -100,8 +101,7 @@ export const EditProfileModal = () => {
           body: JSON.stringify({
             name: values.name,
             imageUrl: values.imageUrl,
-            isRegistered: values.isRegistered,
-            isTravelCertified: values.isTravelCertified,
+            isRegistered: values.isRegistered?.toString(),
             phoneNumber: values.phoneNumber,
             grade: values.grade,
             graduationYear: values.graduationYear,
@@ -221,7 +221,11 @@ export const EditProfileModal = () => {
                           <SelectGroup>
                             <SelectLabel>Roles</SelectLabel>
                             {roles.map((role) => (
-                              <SelectItem key={role} value={role}>
+                              <SelectItem
+                                className="lowercase"
+                                key={role}
+                                value={role}
+                              >
                                 {role}
                               </SelectItem>
                             ))}
@@ -237,14 +241,22 @@ export const EditProfileModal = () => {
                 control={form.control}
                 name="isRegistered"
                 render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-3 place-items-center">
-                    <FormLabel className="uppercase text-center text-xs font-bold">
-                      Registered
-                    </FormLabel>
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">
+                        Registration Complete
+                      </FormLabel>
+                      <FormDescription>
+                        Is the member registered with FIRST?
+                      </FormDescription>
+                    </div>
                     <FormControl>
-                      <Switch disabled={isLoading} onChange={field.onChange} />
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        aria-readonly
+                      />
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -252,20 +264,35 @@ export const EditProfileModal = () => {
                 control={form.control}
                 name="grade"
                 render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-3 place-items-center">
-                    <FormLabel className="uppercase text-center text-xs font-bold">
-                      Grade (9-12)
-                    </FormLabel>
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Grade Level</FormLabel>
+                    </div>
                     <FormControl>
-                      <Input
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value?.toString()}
                         disabled={isLoading}
-                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
-                        placeholder="11"
-                        {...field}
-                        onChange={(e) => field.onChange(+e.target.value)}
-                      />
+                      >
+                        <SelectTrigger className="bg-muted rounded-2xl w-24 p-3">
+                          <SelectValue placeholder="Select Subteam" />
+                        </SelectTrigger>
+                        <SelectContent className="">
+                          <SelectGroup>
+                            <SelectLabel>Roles</SelectLabel>
+                            {grades.map((grade) => (
+                              <SelectItem
+                                className="lowercase"
+                                key={grade}
+                                value={grade}
+                              >
+                                {grade}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -273,20 +300,37 @@ export const EditProfileModal = () => {
                 control={form.control}
                 name="graduationYear"
                 render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-3 place-items-center">
-                    <FormLabel className="uppercase text-center text-xs font-bold">
-                      Graduation Year (eg. 2025)
-                    </FormLabel>
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">
+                        Graduation Year
+                      </FormLabel>
+                    </div>
                     <FormControl>
-                      <Input
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value?.toString()}
                         disabled={isLoading}
-                        className="border-0 w-16 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
-                        placeholder="2025"
-                        {...field}
-                        onChange={(e) => field.onChange(+e.target.value)}
-                      />
+                      >
+                        <SelectTrigger className="bg-muted rounded-2xl w-24 p-3">
+                          <SelectValue placeholder="Select Subteam" />
+                        </SelectTrigger>
+                        <SelectContent className="">
+                          <SelectGroup>
+                            <SelectLabel>Years</SelectLabel>
+                            {graduationYears.map((grade) => (
+                              <SelectItem
+                                className="lowercase"
+                                key={grade}
+                                value={grade}
+                              >
+                                {grade}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
