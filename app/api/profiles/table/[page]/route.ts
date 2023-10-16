@@ -25,8 +25,8 @@ export async function GET(
     }
 
     const retProf = await db.profile.findMany({
-      skip: (+page - 1) * +pageSize,
-      take: +pageSize,
+      skip: (+page - 1) * +pageSize, // If page 1, skip 0, if page 2, skip 10, etc.
+      take: +pageSize, // Take 1 page
       select: {
         badges: {
           select: {

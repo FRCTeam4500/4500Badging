@@ -268,32 +268,37 @@ export function DataTable<TData, TValue>({
     }
 
     console.log(send);
-    // Fetch data from your API here.
+
     return send;
   }
 
+  const [maxPages, setMaxPages] = React.useState(1);
   const [update, setUpdate] = React.useState(false);
 
-  React.useEffect(() => {
-    if (initialRenderRef.current) {
-      initialRenderRef.current = false;
-      return;
-    }
+  // React.useEffect(() => {
+  //   if (initialRenderRef.current) {
+  //     initialRenderRef.current = false;
+  //     return;
+  //   }
 
-    const mm = async () => {
-      console.log(`/api/profiles/table/page=${page}&pageSize=${pageSize}`);
-      const yeah = await fetch(
-        `/api/profiles/table/page=${page}&pageSize=${pageSize}`,
-        {
-          method: "GET",
-        }
-      );
-      const content = await yeah.json();
-      setInternalData(await parseData(content));
-    };
+  //   const mm = async () => {
+  //     const yeah = await fetch(
+  //       `/api/profiles/table/page=${page}&pageSize=${pageSize}`,
+  //       {
+  //         method: "GET",
+  //       }
+  //     );
+  //     const mmhm = await fetch(`/api/profiles/table`, {
+  //       method: "GET",
+  //     });
+  //     const content = await yeah.json();
+  //     const maxcon = await mmhm.json();
+  //     setMaxPages(await maxcon);
+  //     setInternalData(await parseData(content));
+  //   };
 
-    mm();
-  }, [page, pageSize, update]);
+  //   mm();
+  // }, [page, pageSize, update]);
 
   const { onOpen } = useModal();
 
