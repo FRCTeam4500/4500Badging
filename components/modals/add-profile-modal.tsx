@@ -43,8 +43,8 @@ const formSchema = z.object({
   email: z.string(),
   isRegistered: z.boolean().optional(),
   phoneNumber: z.string().optional(),
-  grade: z.number().max(12).min(9),
-  graduationYear: z.number().optional(),
+  grade: z.string().optional(),
+  graduationYear: z.string().optional(),
   role: z.string().optional(),
 });
 
@@ -62,8 +62,8 @@ export const AddProfileModal = () => {
       isRegistered: false,
       email: "",
       phoneNumber: "",
-      grade: 9,
-      graduationYear: 2025,
+      grade: "9",
+      graduationYear: "2025",
       role: "MEMBER",
     },
   });
