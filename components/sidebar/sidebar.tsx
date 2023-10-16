@@ -39,7 +39,7 @@ export const SubteamSidebar = async () => {
   return (
     <div className="flex flex-col h-full text-primary w-full transition-transform ease-in">
       <SubteamHeader role={role} />
-      <ScrollArea className="flex-1 px-3">
+      <ScrollArea className="flex-1 px-3 pb-10 h-screen">
         <div className="mt-2 flex flex-col">
           <BackToHome />
           <SubteamSearch

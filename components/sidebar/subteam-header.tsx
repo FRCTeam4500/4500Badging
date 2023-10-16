@@ -25,7 +25,7 @@ export const SubteamHeader = ({ role }: SubteamHeaderProps) => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="focus:outline-none" asChild>
+      <DropdownMenuTrigger className="focus:outline-none py-5" asChild>
         <button className="w-full text-md font-semibold px-3 flex items-center h-12 border-neutral-200 dark:border-neutral-800 border-b-2 hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition boujee-text">
           Navigation
           <ChevronDown className="h-5 w-5 ml-auto" />
