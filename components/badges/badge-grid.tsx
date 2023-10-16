@@ -102,11 +102,11 @@ export function UserBadgeGrid({
       );
       form.setValue("badgeIds", userBadgeBadgeIds);
     }
-  }, []);
 
-  if (!badges) {
-    router.refresh();
-  }
+    if (!badges) {
+      router.refresh();
+    }
+  }, []);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
