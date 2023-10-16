@@ -2,6 +2,7 @@ import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { Profile, Profile_role } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { v4 as uuidv4 } from "uuid";
 
 export async function GET(req: Request) {
   try {
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
 
     const updates: any = {};
 
-    updates.userId = ""; // Nothing For Now
+    updates.userId = uuidv4(); // Nothing For Now
 
     if (email) updates.email = email;
 
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
     if (imageUrl) updates.imageUrl = imageUrl;
     else updates.imageUrl = "";
 
-    if (isRegistered) updates.isRegistered = isRegistered;
+    if (isRegistered) updates.isRegistered = isRegistered == "true";
     else updates.isRegistered = false;
 
     updates.isTravelCertified = false;
