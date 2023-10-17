@@ -30,7 +30,10 @@ export default async function Page() {
       <div className="text-2xl font-sans my-4 text-center">Badges</div>
       <div className="grid grid-cols-2 justify-center items-center">
         {subteams.map((subteam) => (
-          <div className="flex flex-col justify-center items-center">
+          <div
+            key={subteam}
+            className="flex flex-col justify-center items-center"
+          >
             <div className="text-xl font-sans my-4 text-center">
               {subteam} Badges
             </div>
@@ -38,7 +41,10 @@ export default async function Page() {
               {badges
                 .filter((badge) => badge.subteamType == subteam)
                 .map((badge) => (
-                  <div className="flex flex-col justify-center items-center m-4">
+                  <div
+                    key={badge.id}
+                    className="flex flex-col justify-center items-center m-4"
+                  >
                     <Avatar>
                       <AvatarImage src={badge.imageUrl} />
                       <AvatarFallback>
