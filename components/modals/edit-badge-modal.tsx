@@ -58,12 +58,8 @@ const subteams = [
     label: "Mechanical",
   },
   {
-    id: Subteams.BusinessOutreach,
+    id: Subteams.BusinessOutreachMedia,
     label: "Business & Outreach",
-  },
-  {
-    id: Subteams.Media,
-    label: "Media",
   },
   {
     id: Subteams.Pit,
@@ -130,7 +126,7 @@ export const EditBadgeModal = () => {
       toast({
         title: "Badge Updated",
         description: `Your badge, ${values.name} has been updated.`,
-      })
+      });
       onClose();
     } catch (error) {
       console.error(error);

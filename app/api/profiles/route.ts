@@ -1,6 +1,6 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { Profile, Profile_role } from "@prisma/client";
+import { Profile, Profile_role, Subteams } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
@@ -41,6 +41,7 @@ export async function POST(request: Request) {
       grade,
       graduationYear,
       imageUrl,
+      mainSubteam,
       isRegistered,
     } = await req.json();
 
@@ -82,6 +83,9 @@ export async function POST(request: Request) {
 
     if (isRegistered) updates.isRegistered = isRegistered == "true";
     else updates.isRegistered = false;
+
+    if (mainSubteam) updates.mainSubteam = Subteams[mainSubteam];
+    else updates.mainSubteam = Subteams.NONE;
 
     updates.isTravelCertified = false;
 

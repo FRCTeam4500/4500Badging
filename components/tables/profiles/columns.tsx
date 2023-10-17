@@ -21,6 +21,7 @@ export type Member = {
   id: string;
   name: string;
   email: string;
+  mainSubteam: string;
   numBadges: number;
   badges: React.ReactElement;
   role: "Member" | "Leadership" | "Team Lead" | "Coach" | "Mentor";
@@ -84,6 +85,27 @@ export const columns: ColumnDef<Member>[] = [
     },
     cell: ({ row }) => {
       return <div className="border-collapse">{row.original.email}</div>;
+    },
+  },
+  {
+    accessorKey: "mainSubteam",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Main Subteam
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="border-collapse text-center">
+          {row.original.mainSubteam?.toString() || "None"}
+        </div>
+      );
     },
   },
   {

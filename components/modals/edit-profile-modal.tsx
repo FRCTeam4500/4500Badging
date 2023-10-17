@@ -3,7 +3,7 @@
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Profile_role } from "@prisma/client";
+import { Profile_role, Subteams } from "@prisma/client";
 import {
   Dialog,
   DialogContent,
@@ -36,9 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Toggle } from "../ui/toggle";
 import { Switch } from "../ui/switch";
-import { DropdownMenu } from "../ui/dropdown-menu";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255).optional(),
@@ -46,6 +44,7 @@ const formSchema = z.object({
   isRegistered: z.boolean().optional(),
   phoneNumber: z.string().optional(),
   grade: z.string().optional(),
+  mainSubteam: z.string().optional(),
   graduationYear: z.string().optional(),
   role: z.string().optional(),
 });
@@ -64,6 +63,7 @@ export const EditProfileModal = () => {
       imageUrl: "",
       isRegistered: false,
       phoneNumber: "",
+      mainSubteam: "",
       grade: "9",
       graduationYear: "2027",
       role: Profile_role.MEMBER,
@@ -80,6 +80,7 @@ export const EditProfileModal = () => {
       form.setValue("grade", profile?.grade.toString());
       form.setValue("graduationYear", profile?.graduationYear.toString());
       form.setValue("name", profile?.name);
+      form.setValue("mainSubteam", profile?.mainSubteam);
       form.setValue("imageUrl", profile?.imageUrl);
       form.setValue("isRegistered", profile?.isRegistered);
       form.setValue("role", profile?.role);
@@ -104,6 +105,7 @@ export const EditProfileModal = () => {
             isRegistered: values.isRegistered?.toString(),
             phoneNumber: values.phoneNumber,
             grade: values.grade,
+            mainSubteam: values.mainSubteam,
             graduationYear: values.graduationYear,
             role: values.role,
           }),
@@ -125,6 +127,33 @@ export const EditProfileModal = () => {
     }
   };
 
+  const subteams = [
+    {
+      id: Subteams.Programming,
+      label: "Programming",
+    },
+    {
+      id: Subteams.Cad,
+      label: "Cad",
+    },
+    {
+      id: Subteams.Mechanical,
+      label: "Mechanical",
+    },
+    {
+      id: Subteams.BusinessOutreachMedia,
+      label: "Business & Outreach",
+    },
+    {
+      id: Subteams.Pit,
+      label: "Pit",
+    },
+    {
+      id: Subteams.Strategy,
+      label: "Strategy",
+    },
+  ] as const;
+
   const handleClose = () => {
     form.reset();
     onClose();
@@ -132,7 +161,7 @@ export const EditProfileModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="p-0 overflow-hidden">
+      <DialogContent className="p-0 overflow-y-scroll max-h-screen">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Edit Profile
@@ -140,7 +169,7 @@ export const EditProfileModal = () => {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="space-y-2 px-6">
+            <div className="space-y-1 px-6">
               <FormField
                 control={form.control}
                 name="name"
@@ -206,15 +235,17 @@ export const EditProfileModal = () => {
                 control={form.control}
                 name="role"
                 render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
-                    <FormLabel className="">Role</FormLabel>
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Role</FormLabel>
+                    </div>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         disabled={isLoading}
                       >
-                        <SelectTrigger className="bg-muted rounded-2xl p-3">
+                        <SelectTrigger className="bg-muted rounded-2xl w-36 p-3">
                           <SelectValue placeholder="Select Subteam" />
                         </SelectTrigger>
                         <SelectContent className="">
@@ -233,7 +264,42 @@ export const EditProfileModal = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
-                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="mainSubteam"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Main Subteam</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isLoading}
+                      >
+                        <SelectTrigger className="bg-muted rounded-2xl w-36 p-3">
+                          <SelectValue placeholder="Select Subteam" />
+                        </SelectTrigger>
+                        <SelectContent className="">
+                          <SelectGroup>
+                            <SelectLabel>Main Subteam</SelectLabel>
+                            {subteams.map((subteam) => (
+                              <SelectItem
+                                className="lowercase"
+                                key={subteam.id}
+                                value={subteam.id}
+                              >
+                                {subteam.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
                   </FormItem>
                 )}
               />
@@ -275,7 +341,7 @@ export const EditProfileModal = () => {
                         disabled={isLoading}
                       >
                         <SelectTrigger className="bg-muted rounded-2xl w-24 p-3">
-                          <SelectValue placeholder="Select Subteam" />
+                          <SelectValue placeholder="Select Grade Level" />
                         </SelectTrigger>
                         <SelectContent className="">
                           <SelectGroup>

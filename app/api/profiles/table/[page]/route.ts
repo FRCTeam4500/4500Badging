@@ -41,6 +41,7 @@ export async function GET(
         id: true,
         name: true,
         role: true,
+        mainSubteam: true,
         grade: true,
         graduationYear: true,
         phoneNumber: true,

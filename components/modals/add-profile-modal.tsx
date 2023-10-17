@@ -36,6 +36,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Switch } from "../ui/switch";
+import { Subteams } from "@prisma/client";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -43,6 +44,7 @@ const formSchema = z.object({
   email: z.string(),
   isRegistered: z.boolean().optional(),
   phoneNumber: z.string().optional(),
+  mainSubteam: z.string().optional(),
   grade: z.string().optional(),
   graduationYear: z.string().optional(),
   role: z.string().optional(),
@@ -61,6 +63,7 @@ export const AddProfileModal = () => {
       imageUrl: "",
       isRegistered: false,
       email: "",
+      mainSubteam: Subteams.NONE,
       phoneNumber: "",
       grade: "9",
       graduationYear: "2025",
@@ -88,6 +91,7 @@ export const AddProfileModal = () => {
             imageUrl: values.imageUrl,
             isRegistered: values.isRegistered?.toString(),
             email: values.email,
+            mainSubteam: values.mainSubteam,
             phoneNumber: values.phoneNumber,
             grade: values.grade,
             graduationYear: values.graduationYear,
@@ -110,6 +114,33 @@ export const AddProfileModal = () => {
       console.error(error);
     }
   };
+
+  const subteams = [
+    {
+      id: Subteams.Programming,
+      label: "Programming",
+    },
+    {
+      id: Subteams.Cad,
+      label: "Cad",
+    },
+    {
+      id: Subteams.Mechanical,
+      label: "Mechanical",
+    },
+    {
+      id: Subteams.BusinessOutreachMedia,
+      label: "Business & Outreach",
+    },
+    {
+      id: Subteams.Pit,
+      label: "Pit",
+    },
+    {
+      id: Subteams.Strategy,
+      label: "Strategy",
+    },
+  ] as const;
 
   const handleClose = () => {
     form.reset();
@@ -211,22 +242,28 @@ export const AddProfileModal = () => {
                 control={form.control}
                 name="role"
                 render={({ field }) => (
-                  <FormItem className="grid grid-cols-2 gap-0 place-items-center">
-                    <FormLabel className="">Role</FormLabel>
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Role</FormLabel>
+                    </div>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         disabled={isLoading}
                       >
-                        <SelectTrigger className="bg-muted rounded-2xl p-3">
+                        <SelectTrigger className="bg-muted rounded-2xl w-36 p-3">
                           <SelectValue placeholder="Select Subteam" />
                         </SelectTrigger>
                         <SelectContent className="">
                           <SelectGroup>
                             <SelectLabel>Roles</SelectLabel>
                             {roles.map((role) => (
-                              <SelectItem key={role} value={role}>
+                              <SelectItem
+                                className="lowercase"
+                                key={role}
+                                value={role}
+                              >
                                 {role}
                               </SelectItem>
                             ))}
@@ -234,7 +271,42 @@ export const AddProfileModal = () => {
                         </SelectContent>
                       </Select>
                     </FormControl>
-                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="mainSubteam"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <FormLabel className="text-base">Main Subteam</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isLoading}
+                      >
+                        <SelectTrigger className="bg-muted rounded-2xl w-36 p-3">
+                          <SelectValue placeholder="Select Subteam" />
+                        </SelectTrigger>
+                        <SelectContent className="">
+                          <SelectGroup>
+                            <SelectLabel>Main Subteam</SelectLabel>
+                            {subteams.map((subteam) => (
+                              <SelectItem
+                                className="lowercase"
+                                key={subteam.id}
+                                value={subteam.id}
+                              >
+                                {subteam.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
                   </FormItem>
                 )}
               />
@@ -276,7 +348,7 @@ export const AddProfileModal = () => {
                         disabled={isLoading}
                       >
                         <SelectTrigger className="bg-muted rounded-2xl w-24 p-3">
-                          <SelectValue placeholder="Select Subteam" />
+                          <SelectValue placeholder="Select Grade Level" />
                         </SelectTrigger>
                         <SelectContent className="">
                           <SelectGroup>

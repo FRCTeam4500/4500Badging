@@ -83,6 +83,7 @@ export async function PATCH(
       grade,
       phoneNumber,
       email,
+      mainSubteam,
       graduationYear,
       isRegistered,
       isTravelCertified,
@@ -119,7 +120,10 @@ export async function PATCH(
         create: userBadges.map((bad: UserBadge) => ({ badgeId: bad.badgeId })),
       };
     }
+    if (mainSubteam) updateData.mainSubteam = mainSubteam;
     if (role) updateData.role = role;
+
+    return NextResponse.json(updateData);
 
     const updatedProfile = await db.profile.update({
       where: {
@@ -133,6 +137,6 @@ export async function PATCH(
     return NextResponse.json(updatedProfile);
   } catch (error) {
     console.error("[PROFILE_ID_PATCH]", error);
-    return new NextResponse("Internal Error" + error, { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }

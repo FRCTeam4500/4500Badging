@@ -21,6 +21,7 @@ model Profile {
   isTravelCertified Boolean  @default(false)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  mainSubteam       Subteams @default(NONE)
 
   role   Profile_role @default(MEMBER)
   badges UserBadge[]
@@ -57,8 +58,7 @@ enum Subteams {
   Cad
   Strategy
   Mechanical
-  Media
-  BusinessOutreach
+  BusinessOutreachMedia
   Pit
 }
 

@@ -79,6 +79,7 @@ async function getData(): Promise<Member[]> {
       role: profile.role,
       isRegistered: profile.isRegistered,
       isTravelCertified: profile.isTravelCertified,
+      mainSubteam: profile.mainSubteam,
     });
   }
 
