@@ -57,12 +57,8 @@ const subteams = [
     label: "Mechanical",
   },
   {
-    id: Subteams.BusinessOutreach,
-    label: "Business & Outreach",
-  },
-  {
-    id: Subteams.Media,
-    label: "Media",
+    id: Subteams.BusinessOutreachMedia,
+    label: "B,O,M",
   },
   {
     id: Subteams.Pit,

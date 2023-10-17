@@ -46,6 +46,10 @@ const formSchema = z.object({
 
 const subteams = [
   {
+    id: Subteams.NONE,
+    label: "None",
+  },
+  {
     id: Subteams.Programming,
     label: "Programming",
   },
@@ -59,7 +63,7 @@ const subteams = [
   },
   {
     id: Subteams.BusinessOutreachMedia,
-    label: "Business & Outreach",
+    label: "B,O,M",
   },
   {
     id: Subteams.Pit,

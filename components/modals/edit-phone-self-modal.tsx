@@ -99,6 +99,10 @@ export const EditPhoneSelfModal = () => {
 
   const subteams = [
     {
+      id: Subteams.NONE,
+      label: "None",
+    },
+    {
       id: Subteams.Programming,
       label: "Programming",
     },
@@ -112,7 +116,7 @@ export const EditPhoneSelfModal = () => {
     },
     {
       id: Subteams.BusinessOutreachMedia,
-      label: "Business & Outreach",
+      label: "B,O,M",
     },
     {
       id: Subteams.Pit,

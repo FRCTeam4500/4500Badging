@@ -75,6 +75,10 @@ export const EditProfileModal = () => {
   const graduationYears = ["2024", "2025", "2026", "2027"];
   const subteams = [
     {
+      id: Subteams.NONE,
+      label: "None",
+    },
+    {
       id: Subteams.Programming,
       label: "Programming",
     },
@@ -88,7 +92,7 @@ export const EditProfileModal = () => {
     },
     {
       id: Subteams.BusinessOutreachMedia,
-      label: "Business & Outreach",
+      label: "B,O,M",
     },
     {
       id: Subteams.Pit,
