@@ -21,10 +21,10 @@ model Profile {
   isTravelCertified Boolean  @default(false)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
-  mainSubteam       Subteams @default(NONE)
 
-  role   Profile_role @default(MEMBER)
-  badges UserBadge[]
+  role              Profile_role @default(MEMBER)
+  mainSubteam       Subteams @default(NONE)
+  badges            UserBadge[]
 }
 
 model Badge {
@@ -36,7 +36,7 @@ model Badge {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   userBadge   UserBadge[]
-  subteamType Subteams
+  subteamType String
 }
 
 model UserBadge {

@@ -63,7 +63,7 @@ export const EditProfileModal = () => {
       imageUrl: "",
       isRegistered: false,
       phoneNumber: "",
-      mainSubteam: "",
+      mainSubteam: Subteams.NONE,
       grade: "9",
       graduationYear: "2027",
       role: Profile_role.MEMBER,
@@ -73,6 +73,32 @@ export const EditProfileModal = () => {
   const roles = ["COACH", "MEMBER", "MENTOR", "CAPTAIN", "LEADERSHIP", "LEAD"];
   const grades = ["9", "10", "11", "12"];
   const graduationYears = ["2024", "2025", "2026", "2027"];
+  const subteams = [
+    {
+      id: Subteams.Programming,
+      label: "Programming",
+    },
+    {
+      id: Subteams.Cad,
+      label: "Cad",
+    },
+    {
+      id: Subteams.Mechanical,
+      label: "Mechanical",
+    },
+    {
+      id: Subteams.BusinessOutreachMedia,
+      label: "Business & Outreach",
+    },
+    {
+      id: Subteams.Pit,
+      label: "Pit",
+    },
+    {
+      id: Subteams.Strategy,
+      label: "Strategy",
+    },
+  ] as const;
 
   useEffect(() => {
     if (profile) {
@@ -126,33 +152,6 @@ export const EditProfileModal = () => {
       console.error(error);
     }
   };
-
-  const subteams = [
-    {
-      id: Subteams.Programming,
-      label: "Programming",
-    },
-    {
-      id: Subteams.Cad,
-      label: "Cad",
-    },
-    {
-      id: Subteams.Mechanical,
-      label: "Mechanical",
-    },
-    {
-      id: Subteams.BusinessOutreachMedia,
-      label: "Business & Outreach",
-    },
-    {
-      id: Subteams.Pit,
-      label: "Pit",
-    },
-    {
-      id: Subteams.Strategy,
-      label: "Strategy",
-    },
-  ] as const;
 
   const handleClose = () => {
     form.reset();

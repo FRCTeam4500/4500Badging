@@ -84,6 +84,12 @@ const ProfileIdPage = async ({ params }: ProfileIdPageProps) => {
           <h3 className="text-md text-foreground text-left">
             IS TRAVEL CERTIFIED: {profile.isTravelCertified.toString()}
           </h3>
+          <h3 className="text-md text-foreground text-left">
+            MAIN SUBTEAM: {profile.mainSubteam}
+          </h3>
+          <h3 className="text-md text-foreground text-left">
+            PHONE NUMBER {profile.phoneNumber}
+          </h3>
         </div>
       </div>
       <div className="flex flex-col mt-4 items-center justify-center">

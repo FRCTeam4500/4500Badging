@@ -1,3 +1,4 @@
+import { updateProfile } from "./../../../../lib/update-profile";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
@@ -120,10 +121,8 @@ export async function PATCH(
         create: userBadges.map((bad: UserBadge) => ({ badgeId: bad.badgeId })),
       };
     }
-    if (mainSubteam) updateData.mainSubteam = mainSubteam;
     if (role) updateData.role = role;
-
-    return NextResponse.json(updateData);
+    if (mainSubteam) updateData.mainSubteam = mainSubteam;
 
     const updatedProfile = await db.profile.update({
       where: {
@@ -137,6 +136,10 @@ export async function PATCH(
     return NextResponse.json(updatedProfile);
   } catch (error) {
     console.error("[PROFILE_ID_PATCH]", error);
-    return NextResponse.json({ type: "Internal Error", status: 500, error });
+    return NextResponse.json({
+      type: "Internal Error",
+      status: 500,
+      error,
+    });
   }
 }

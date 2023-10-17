@@ -1,6 +1,7 @@
 import { currentUser, redirectToSignIn } from "@clerk/nextjs";
 
 import { db } from "@/lib/db";
+import { Subteams } from "@prisma/client";
 
 export const initialProfile = async () => {
   const user = await currentUser();
@@ -80,6 +81,7 @@ export const initialProfile = async () => {
       isRegistered: false,
       isTravelCertified: false,
       phoneNumber: "",
+      mainSubteam: Subteams.NONE,
     },
     include: {
       badges: true,
