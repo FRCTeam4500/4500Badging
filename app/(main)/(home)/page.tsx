@@ -51,7 +51,7 @@ export default async function Home() {
     },
   });
 
-  let lv3Subteam: Subteams = Subteams.NONE;
+  let lv3Subteam: string = Subteams.NONE;
   let lv3Recieved: boolean = false;
   let blueRecieved: boolean = false;
   let scoutingRecieved: boolean = false;
