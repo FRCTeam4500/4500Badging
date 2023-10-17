@@ -36,7 +36,7 @@ export async function GET(req: Request) {
     }
   } catch (error) {
     console.error("[BADGE_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }
 
