@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const req = request.clone();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     const retProf = await db.profile.aggregate({
@@ -22,6 +22,6 @@ export async function GET(request: Request) {
     return NextResponse.json(retProf);
   } catch (error) {
     console.log("[PROFILES_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }

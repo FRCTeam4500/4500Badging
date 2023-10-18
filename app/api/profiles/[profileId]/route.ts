@@ -13,15 +13,15 @@ export async function GET(
     const profile: Profile | null = await currentProfile();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (!params.profileId) {
-      return new NextResponse("Profile ID missing", { status: 400 });
+      return NextResponse.json({ type: "Profile ID missing", status: 400 });
     }
 
     if (profile.id != params.profileId && profile.role != Profile_role.COACH) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     const ret = await db.profile.findUnique({
@@ -35,7 +35,7 @@ export async function GET(
     return NextResponse.json(ret);
   } catch (error) {
     console.error("[PROFILE_ID_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500 });
   }
 }
 
@@ -47,15 +47,15 @@ export async function DELETE(
     const profile: Profile | null = await currentProfile();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (!params.profileId) {
-      return new NextResponse("Profile ID missing", { status: 400 });
+      return NextResponse.json({ type: "Profile ID missing", status: 400 });
     }
 
     if (profile.role != Profile_role.COACH) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     const ret = await db.profile.delete({
@@ -67,7 +67,7 @@ export async function DELETE(
     return NextResponse.json(ret);
   } catch (error) {
     console.error("[PROFILE_ID_DELETE]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }
 
@@ -94,15 +94,15 @@ export async function PATCH(
     } = await req.json(); // Subteams are subteam types
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (!params.profileId) {
-      return new NextResponse("Profile ID missing", { status: 400 });
+      return NextResponse.json({ type: "Profile ID missing", status: 400 });
     }
 
     if (!isSelf && profile.role != Profile_role.COACH) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     const updateData: any = {};

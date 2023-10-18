@@ -9,11 +9,11 @@ export async function GET(req: Request) {
     const profile: Profile | null = await currentProfile();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (profile.role != Profile_role.COACH) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     const ret = await db.profile.findMany({
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
     return NextResponse.json(ret);
   } catch (error) {
     console.error("[PROFILES_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }
 
@@ -46,15 +46,15 @@ export async function POST(request: Request) {
     } = await req.json();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (profile.role != Profile_role.COACH) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (!email) {
-      return new NextResponse("Email missing", { status: 400 });
+      return NextResponse.json({ type: "Email missing", status: 400 });
     }
 
     const updates: any = {};
@@ -97,6 +97,6 @@ export async function POST(request: Request) {
     return NextResponse.json(ret);
   } catch (error) {
     console.error("[PROFILES_POST]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }

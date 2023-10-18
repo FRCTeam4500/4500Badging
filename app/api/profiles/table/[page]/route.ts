@@ -17,11 +17,11 @@ export async function GET(
     const req = request.clone();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (profile.role != Profile_role.COACH) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     const retProf = await db.profile.findMany({
@@ -52,6 +52,6 @@ export async function GET(
     return NextResponse.json(retProf);
   } catch (error) {
     console.log("[PROFILES_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }

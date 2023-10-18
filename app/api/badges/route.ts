@@ -8,7 +8,7 @@ export async function GET(req: Request) {
     const profile = await currentProfile();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (
@@ -55,14 +55,14 @@ export async function POST(request: Request) {
     } = await req.json(); // Subteams are subteam types (ENUMS)
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (
       profile.role != Profile_role.COACH &&
       profile.role != Profile_role.LEAD
     ) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     const updatedBadge = await db.badge.create({

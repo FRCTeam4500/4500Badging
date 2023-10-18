@@ -7,12 +7,12 @@ export async function GET(req: Request) {
     const profile: Profile | null = await currentProfile();
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     return NextResponse.json(profile);
   } catch (error) {
     console.error("[SELF_PROFILE_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }

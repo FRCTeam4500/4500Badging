@@ -9,7 +9,7 @@ export async function GET(
 ) {
   try {
     if (!params.badgeId) {
-      return new NextResponse("Badge ID missing", { status: 400 });
+      return NextResponse.json({ type: "Badge ID missing", status: 400 });
     }
 
     const ret = await db.badge.findUnique({
@@ -23,7 +23,7 @@ export async function GET(
     return NextResponse.json(ret);
   } catch (error) {
     console.error("[BADGE_ID_GET]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500 });
   }
 }
 
@@ -43,18 +43,18 @@ export async function PATCH(
     } = await req.json(); // Subteams are subteam types
 
     if (!profile) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     if (!params.badgeId) {
-      return new NextResponse("Badge ID missing", { status: 400 });
+      return NextResponse.json({ type: "Badge ID missing", status: 400 });
     }
 
     if (
       profile.role != Profile_role.COACH &&
       profile.role != Profile_role.LEAD
     ) {
-      return new NextResponse("Unauthorized", { status: 401 });
+      return NextResponse.json({ type: "Unauthorized", status: 401 });
     }
 
     const updateData: any = {};
@@ -77,6 +77,6 @@ export async function PATCH(
     return NextResponse.json(updatedProfile);
   } catch (error) {
     console.error("[BADGE_ID_PATCH]", error);
-    return new NextResponse("Internal Error", { status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500 });
   }
 }
