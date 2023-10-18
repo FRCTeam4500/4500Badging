@@ -153,7 +153,7 @@ export const AddProfileModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
-      <DialogContent className="p-0 overflow-hidden">
+      <DialogContent className="p-0 overflow-y-scroll max-y-screen">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
             Add Profile
