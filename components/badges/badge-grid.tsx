@@ -172,7 +172,7 @@ export function UserBadgeGrid({
                     key="badgeIds"
                     render={({ field }) => (
                       <FormItem className="grid gap-3 grid-cols-4">
-                        {badges.map((badge) => (
+                        {badges?.map((badge) => (
                           <FormField
                             key={badge.id}
                             control={form.control}
@@ -190,14 +190,14 @@ export function UserBadgeGrid({
                                       onPressedChange={(value) => {
                                         return value
                                           ? field.onChange([
-                                              ...field.value!,
-                                              badge.id,
-                                            ])
+                                            ...field.value!,
+                                            badge.id,
+                                          ])
                                           : field.onChange(
-                                              field.value?.filter(
-                                                (v) => v !== badge.id
-                                              )
-                                            );
+                                            field.value?.filter(
+                                              (v) => v !== badge.id
+                                            )
+                                          );
                                       }}
                                     >
                                       <TooltipProvider>
