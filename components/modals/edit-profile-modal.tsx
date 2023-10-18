@@ -151,6 +151,7 @@ export const EditProfileModal = () => {
         title: "Profile Updated",
         description: `Profile, ${values.name} has been updated successfully.`,
       });
+      router.refresh();
       onClose();
     } catch (error) {
       console.error(error);
