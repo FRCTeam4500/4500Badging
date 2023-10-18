@@ -128,6 +128,7 @@ export function UserBadgeGrid({
       })();
 
       form.reset();
+      router.refresh();
       onClose();
     } catch (error) {
       console.error(error);
@@ -228,7 +229,11 @@ export function UserBadgeGrid({
                   />
                 </ScrollArea>
                 <div className="grid grid-cols-1 mt-2">
-                  <Button variant="default" disabled={isLoading}>
+                  <Button
+                    variant="default"
+                    onClick={() => setOpen(false)}
+                    disabled={isLoading}
+                  >
                     Save
                   </Button>
                 </div>
