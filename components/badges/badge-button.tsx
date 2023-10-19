@@ -39,3 +39,5 @@ export const BadgeButton = React.forwardRef(({ badge }: BadgeProps, ref: React.R
 		</button>
 	)
 })
+
+export default BadgeButton;
