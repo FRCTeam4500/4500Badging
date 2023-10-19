@@ -14,7 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { UserButton } from "@clerk/nextjs";
-import { Subteams } from "@prisma/client";
+import { Profile_role, Subteams } from "@prisma/client";
 import { Badge } from "lucide-react";
 
 export default async function Page() {
@@ -57,7 +57,10 @@ export default async function Page() {
         <HomeButtonIcon className="mr-2" />
         <UserButton />
         <ModeToggle className="ml-2" />
-        <AddBadgeButton />
+        {profile?.role == Profile_role.COACH
+          || profile?.role == Profile_role.LEAD
+          || profile?.role == Profile_role.CAPTAIN
+          ? <AddBadgeButton /> : null}
       </div>
 
       <h1 className="scroll-m-20 text-4xl text-center my-4 font-extrabold tracking-tight lg:text-5xl">

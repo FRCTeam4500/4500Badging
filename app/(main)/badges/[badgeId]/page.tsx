@@ -42,7 +42,10 @@ const ProfileIdPage = async ({ params }: ProfileIdPageProps) => {
                 <HomeButtonIcon className="mr-2" />
                 <UserButton />
                 <ModeToggle className="mx-2" />
-                <EditBadgeButton badge={badge!} />
+                {profile?.role == Profile_role.COACH
+                    || profile?.role == Profile_role.LEAD
+                    || profile?.role == Profile_role.CAPTAIN
+                    ? <EditBadgeButton badge={badge!} /> : null}
             </div>
 
             <h1 className="scroll-m-20 text-4xl text-center my-4 font-extrabold tracking-tight lg:text-5xl">
