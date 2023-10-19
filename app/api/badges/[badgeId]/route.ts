@@ -38,6 +38,7 @@ export async function PATCH(
       name,
       level,
       description,
+      deliverable,
       imageUrl,
       subteamType,
     } = await req.json(); // Subteams are subteam types
@@ -63,6 +64,7 @@ export async function PATCH(
     if (imageUrl) updateData.imageUrl = imageUrl;
     if (level) updateData.level = level;
     if (description) updateData.description = description;
+    if (deliverable) updateData.deliverable = deliverable;
     if (subteamType) updateData.subteamType = subteamType;
 
     const updatedProfile = await db.badge.update({
@@ -77,6 +79,6 @@ export async function PATCH(
     return NextResponse.json(updatedProfile);
   } catch (error) {
     console.error("[BADGE_ID_PATCH]", error);
-    return NextResponse.json({ type: "Internal Error", status: 500 });
+    return NextResponse.json({ type: "Internal Error", status: 500, error });
   }
 }

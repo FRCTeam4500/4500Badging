@@ -50,6 +50,7 @@ export async function POST(request: Request) {
       name,
       level,
       description,
+      deliverable,
       imageUrl,
       subteamType,
     } = await req.json(); // Subteams are subteam types (ENUMS)
@@ -70,6 +71,7 @@ export async function POST(request: Request) {
         name,
         level,
         description,
+        deliverable,
         imageUrl,
         subteamType,
       },
