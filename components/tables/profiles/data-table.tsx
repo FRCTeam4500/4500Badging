@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import React from "react";
+import React, { useRef } from "react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -57,6 +57,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge, Plus, RefreshCcw, RefreshCw } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
+import { useIsVisible } from "@/hooks/use-is-visible";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -302,8 +303,11 @@ export function DataTable<TData, TValue>({
 
   const { onOpen } = useModal();
 
+  const aRef = useRef(null)
+  const aVis = useIsVisible(aRef)
+
   return (
-    <div className="min-w-full -mx-2 flex-col">
+    <div ref={aRef} className={`min-w-full -mx-2 flex-col transition-opacity ease-in duration-700 ${aVis ? "opacity-100" : "opacity-0"}`}>
       <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter emails..."
@@ -323,13 +327,13 @@ export function DataTable<TData, TValue>({
                 let names = "";
                 table.getRowModel().rows?.length
                   ? (names = table
-                      .getRowModel()
-                      .rows.map((row) =>
-                        row.getIsSelected()
-                          ? names.concat(row.getValue("name"))
-                          : null
-                      )
-                      .join("\n"))
+                    .getRowModel()
+                    .rows.map((row) =>
+                      row.getIsSelected()
+                        ? names.concat(row.getValue("name"))
+                        : null
+                    )
+                    .join("\n"))
                   : toast({ title: "No Profiles" });
                 names != "" ? navigator.clipboard.writeText(names) : null;
                 names != "" ? toast({ title: "Copied Names" }) : null;
@@ -342,13 +346,13 @@ export function DataTable<TData, TValue>({
                 let emails = "";
                 table.getRowModel().rows?.length
                   ? (emails = table
-                      .getRowModel()
-                      .rows.map((row) =>
-                        row.getIsSelected()
-                          ? emails.concat(row.getValue("email"))
-                          : null
-                      )
-                      .join("\n"))
+                    .getRowModel()
+                    .rows.map((row) =>
+                      row.getIsSelected()
+                        ? emails.concat(row.getValue("email"))
+                        : null
+                    )
+                    .join("\n"))
                   : toast({ title: "No Profiles" });
                 emails != "" ? navigator.clipboard.writeText(emails) : null;
                 emails != "" ? toast({ title: "Copied Emails" }) : null;
@@ -362,18 +366,18 @@ export function DataTable<TData, TValue>({
               onClick={() => {
                 table.getRowModel().rows?.length
                   ? table.getRowModel().rows.map((row) =>
-                      row.getIsSelected()
-                        ? fetchDelete({
-                            id: row.getValue("id"),
-                          })
-                            .then(() => {
-                              toast({ title: "Profile deleted" });
-                            })
-                            .catch(() => {
-                              toast({ title: "Error deleting profile" });
-                            })
-                        : null
-                    )
+                    row.getIsSelected()
+                      ? fetchDelete({
+                        id: row.getValue("id"),
+                      })
+                        .then(() => {
+                          toast({ title: "Profile deleted" });
+                        })
+                        .catch(() => {
+                          toast({ title: "Error deleting profile" });
+                        })
+                      : null
+                  )
                   : toast({ title: "No Profiles" });
               }}
             >
@@ -439,9 +443,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   );
                 })}
