@@ -41,7 +41,7 @@ const ProfileIdPage = async ({ params }: ProfileIdPageProps) => {
             <div className="flex mt-3 items-center justify-center">
                 <HomeButtonIcon className="mr-2" />
                 <UserButton />
-                <ModeToggle className="mx-2" />
+                <ModeToggle className="ml-2" />
                 {profile?.role == Profile_role.COACH
                     || profile?.role == Profile_role.LEAD
                     || profile?.role == Profile_role.CAPTAIN

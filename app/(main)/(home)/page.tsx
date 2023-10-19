@@ -19,6 +19,7 @@ import { Badge, Medal } from "lucide-react";
 import { redirect } from "next/navigation";
 import Image from "next/image";
 import { ActionTooltip } from "@/components/action-tooltip";
+import { BadgeButton } from "@/components/badges/badge-button";
 
 export default async function Home() {
   const profile: Profile = await initialProfile();
@@ -265,29 +266,7 @@ export default async function Home() {
                       <div className="absolute -inset-0.5 bg-gradient-to-r from-orange-600 to-blue-600 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button className="relative px-7 py-4 bg-secondary rounded-lg leading-none flex felx-col items-center divide-x divide-gray-600">
-                            <span className="flex w-60 items-center space-x-5">
-                              <div>{" " + badge.badge.level}</div>
-                              <Avatar>
-                                <AvatarImage
-                                  src={badge.badge.imageUrl}
-                                  alt={badge.badge.name}
-                                />
-                                <AvatarFallback>
-                                  <Badge size={48} />
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="pr-2 w-36 text-left overflow-x-hidden py-1 whitespace-nowrap overflow-ellipsis">
-                                {badge.badge.name}
-                              </span>
-                            </span>
-                            <div className="pl-6 text-indigo-400 group-hover:text-primary transition duration-200">
-                              See Desc.{" "}
-                              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                                -&gt;
-                              </span>
-                            </div>
-                          </button>
+                          <BadgeButton badge={badge.badge} />
                         </TooltipTrigger>
                         <TooltipContent>
                           <div className="flex flex-col p-2 max-w-sm items-center justify-center">

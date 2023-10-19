@@ -4,15 +4,17 @@ import { Badge as BD } from "@prisma/client"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Badge } from "lucide-react"
 import { useRouter } from "next/navigation"
+import React from "react"
 
 interface BadgeProps {
+	innerRef?: React.Ref<HTMLButtonElement>,
 	badge: BD
 }
 
-export function BadgeButton({ badge }: BadgeProps) {
+export const BadgeButton = React.forwardRef(({ badge }: BadgeProps, ref: React.Ref<HTMLButtonElement>) => {
 	const router = useRouter()
 	return (
-		<button onClick={() => { router.push(`/badges/${badge.id}`) }} className="relative px-7 py-4 bg-secondary rounded-lg leading-none flex felx-col items-center divide-x divide-gray-600">
+		<button ref={ref} onClick={() => { router.push(`/badges/${badge.id}`) }} className="relative px-7 py-4 bg-secondary rounded-lg leading-none flex felx-col items-center divide-x divide-gray-600">
 			<span className="flex w-60 items-center space-x-5">
 				<div>{" " + badge.level}</div>
 				<Avatar>
@@ -36,4 +38,4 @@ export function BadgeButton({ badge }: BadgeProps) {
 			</div>
 		</button>
 	)
-}
+})
