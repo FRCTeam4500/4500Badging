@@ -35,4 +35,5 @@ export const BadgeButton = React.forwardRef(({ badge, className }: { badge: BD, 
 	)
 })
 
+BadgeButton.displayName = 'BadgeButton';
 export default BadgeButton;
