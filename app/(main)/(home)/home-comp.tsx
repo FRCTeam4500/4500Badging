@@ -14,6 +14,8 @@ import Image from "next/image";
 import { BadgeButton } from "@/components/badges/badge-button";
 import { useRef } from "react";
 import { useIsVisible } from "@/hooks/use-is-visible";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 interface HomeCompProps {
 	userBadges: any,
@@ -23,6 +25,7 @@ interface HomeCompProps {
 
 export default function HomeComp({ userBadges, profile, requirements }: HomeCompProps) {
 
+	const router = useRouter()
 	const a = useRef(null)
 	const aVis = useIsVisible(a)
 
@@ -170,6 +173,7 @@ export default function HomeComp({ userBadges, profile, requirements }: HomeComp
 
 			{userBadges.length > 0 ? (
 				<div className="flex flex-col items-center justify-center">
+					<Button className="my-6" onClick={() => router.push("/badges")}>View All Badges</Button>
 					<h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
 						Your Badges
 					</h2>
@@ -200,6 +204,7 @@ export default function HomeComp({ userBadges, profile, requirements }: HomeComp
 				<div className="grid grid-cols-1 shadow-2xl mt-14 p-12 gap-3">
 					<TooltipProvider>
 						<div className="flex flex-col items-center justify-center">
+							<Button onClick={() => router.push("/badges")}>View All Badges</Button>
 							<h1 className="text-2xl lg:text-4xl md:text-4xl xl:text-4xl 2xl:text4xl p-10 font-bold text-center">
 								You have no badges yet!
 							</h1>
