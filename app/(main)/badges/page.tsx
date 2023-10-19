@@ -18,7 +18,7 @@ import { Profile_role, Subteams } from "@prisma/client";
 import { Badge } from "lucide-react";
 
 export default async function Page() {
-  const badges = await db.badge.findMany();
+  const badges = await db.badge.findMany({ orderBy: { level: "asc" } });
   const profile = await currentProfile();
   const subteams = [
     {

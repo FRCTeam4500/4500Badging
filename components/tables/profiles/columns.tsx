@@ -29,6 +29,7 @@ export type Member = {
   isTravelCertified: boolean;
 };
 
+// This is the type of data that we'll be displaying in the coach profiles table.
 export const columns: ColumnDef<Member>[] = [
   {
     id: "select",

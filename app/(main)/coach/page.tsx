@@ -33,7 +33,7 @@ export default async function Page() {
             </h2>
           </div>
         </Link>
-        <Link href="/coach/badges">
+        <Link href="/badges">
           <div className="rounded-2xl p-4 mx-1 shadow-xl">
             <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
               Badges
