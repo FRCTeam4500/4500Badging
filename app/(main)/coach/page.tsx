@@ -7,6 +7,7 @@ import { UserButton } from "@clerk/nextjs";
 import { Profile_role } from "@prisma/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { GradButtons } from "./grad-buttons";
 
 export default async function Page() {
   const profile = await initialProfile();
@@ -16,31 +17,19 @@ export default async function Page() {
   }
 
   return (
-    <div>
+    <div className="h-screen flex flex-col justify-center items-center">
       <div className="flex mt-3 mx-3 items-center justify-center">
         <UserButton />
         <ModeToggle className="ml-2" />
         <EditProfileButton profile={profile} />
       </div>
-      <h1 className="text-2xl lg:text-4xl md:text-4xl p-4 mb-4 xl:text-4xl 2xl:text4xl font-bold text-center">
+      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
         Hello, {profile.name}
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2">
-        <Link href="/coach/profiles">
-          <div className="rounded-2xl p-4 mx-1 shadow-xl">
-            <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
-              Member Profiles
-            </h2>
-          </div>
-        </Link>
-        <Link href="/badges">
-          <div className="rounded-2xl p-4 mx-1 shadow-xl">
-            <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
-              Badges
-            </h2>
-          </div>
-        </Link>
+      <div className="flex justify-center items-center flex-grow"> {/* Use flex-grow */}
+        <GradButtons />
       </div>
     </div>
+
   );
 }
