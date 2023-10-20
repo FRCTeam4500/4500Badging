@@ -30,8 +30,9 @@ import {
   SelectItem,
   SelectLabel,
   SelectValue,
+  SelectGroup,
+  SelectTrigger
 } from "../ui/select";
-import { SelectGroup, SelectTrigger } from "@radix-ui/react-select";
 import { Subteams } from "@prisma/client";
 import { toast } from "../ui/use-toast";
 

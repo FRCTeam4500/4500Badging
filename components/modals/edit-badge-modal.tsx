@@ -23,7 +23,6 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
-import { UserBadgeGrid } from "../badges/badge-grid";
 import { Textarea } from "../ui/textarea";
 import {
   Select,
@@ -31,8 +30,9 @@ import {
   SelectItem,
   SelectLabel,
   SelectValue,
+  SelectTrigger,
+  SelectGroup
 } from "../ui/select";
-import { SelectGroup, SelectTrigger } from "@radix-ui/react-select";
 import { Subteams } from "@prisma/client";
 import { toast } from "../ui/use-toast";
 

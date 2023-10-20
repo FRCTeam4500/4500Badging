@@ -122,9 +122,12 @@ export function UserBadgeGrid({
         });
         const content = await rawResponse.json();
         console.log(content);
+        router.refresh();
       })();
 
       form.reset();
+      router.refresh();
+      onClose();
     } catch (error) {
       console.error(error);
     }
