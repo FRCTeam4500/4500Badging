@@ -24,7 +24,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import React from "react";
-import { Badge as BD } from "@prisma/client";
+import { Badge as BD, UserBadge } from "@prisma/client";
 
 const formSchema = z.object({
   badgeIds: z.array(z.string()).optional(),
@@ -76,8 +76,8 @@ export function UserBadgeGrid({
         if (response.ok) {
           const data = await response.json();
           setUserBadges(data);
-          form.setValue("badgeIds", data);
-          const userBadgeBadgeIds = Array.isArray(data) ? data.map((userBadge) => userBadge.badgeId) : [];
+          const userBadgeBadgeIds = Array.from(data.badges).map((badge: any) => badge.badgeId)
+          console.log(userBadgeBadgeIds)
           form.setValue("badgeIds", userBadgeBadgeIds);
         } else {
           console.error("Failed to fetch user badges");
@@ -183,7 +183,7 @@ export function UserBadgeGrid({
                     name="badgeIds"
                     key="badgeIds"
                     render={({ field }) => (
-                      <FormItem className="grid gap-1 grid-cols-5 items-center">
+                      <FormItem className="grid gap-1 grid-cols-5 items-start">
                         {Object.entries(groupedBadges).map(([subteamType, badges]: [string, BD[]]) => (
                           <React.Fragment key={subteamType}>
                             <div className="col-span-5">
@@ -199,7 +199,7 @@ export function UserBadgeGrid({
                                     <FormItem>
                                       <FormControl>
                                         <Toggle
-                                          variant={"default"}
+                                          variant={"outline"}
                                           className="px-[0.5] py-1"
                                           pressed={field.value && field.value.includes(badge.id)}
                                           value={badge.id}

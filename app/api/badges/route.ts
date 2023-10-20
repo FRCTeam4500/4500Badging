@@ -31,6 +31,9 @@ export async function GET(req: Request) {
             },
           },
         },
+        orderBy: {
+          level: "asc",
+        }
       });
       return NextResponse.json(ret);
     }
