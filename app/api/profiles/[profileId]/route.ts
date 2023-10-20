@@ -28,7 +28,7 @@ export async function GET(
       where: {
         id: params.profileId,
       },
-      include: {
+      select: {
         badges: true,
       },
     });

@@ -23,6 +23,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import React from "react";
+import { Badge as BD } from "@prisma/client";
 
 const formSchema = z.object({
   badgeIds: z.array(z.string()).optional(),
@@ -36,7 +38,7 @@ export function UserBadgeGrid({
   modalType: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [badges, setBadges] = useState<any>();
+  const [bdgs, setBdgs] = useState<any>();
   const [userBadges, setUserBadges] = useState<any>();
 
   const router = useRouter();
@@ -63,20 +65,33 @@ export function UserBadgeGrid({
     };
 
     const getUserBadges = async () => {
-      return await fetch(`/api/userbadges/${profile?.id}`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
+      try {
+        const response = await fetch(`/api/profiles/${profile?.id}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUserBadges(data);
+          form.setValue("badgeIds", data);
+          const userBadgeBadgeIds = Array.isArray(data) ? data.map((userBadge) => userBadge.badgeId) : [];
+          form.setValue("badgeIds", userBadgeBadgeIds);
+        } else {
+          console.error("Failed to fetch user badges");
+        }
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     getBadges()
       .then((response) => {
         if (response.ok) {
           response.json().then((data) => {
-            setBadges(data);
+            setBdgs(data);
           });
         }
       })
@@ -85,25 +100,8 @@ export function UserBadgeGrid({
       });
 
     getUserBadges()
-      .then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            setUserBadges(data);
-          });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
 
-    if (userBadges) {
-      const userBadgeBadgeIds = userBadges.map(
-        (userBadge) => userBadge.badgeId
-      );
-      form.setValue("badgeIds", userBadgeBadgeIds);
-    }
-
-    if (!badges) {
+    if (!bdgs) {
       router.refresh();
     }
   }, []);
@@ -135,6 +133,20 @@ export function UserBadgeGrid({
     }
   };
 
+  function groupBadgesBySubteamType(badges) {
+    const groupedBadges = {};
+    badges.forEach((badge) => {
+      const subteamType = badge.subteamType;
+      if (!groupedBadges[subteamType]) {
+        groupedBadges[subteamType] = [];
+      }
+      groupedBadges[subteamType].push(badge);
+    });
+    return groupedBadges;
+  }
+
+  const groupedBadges: { [subteamType: string]: BD[] } = bdgs ? groupBadgesBySubteamType(bdgs) : {};
+
   const isLoading = form.formState.isSubmitting;
 
   return (
@@ -161,7 +173,7 @@ export function UserBadgeGrid({
             <TooltipContent>Edit Profile Badges</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent className=" max-h-64 overflow-y-scroll" align="end">
           <DropdownMenuItem>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -171,58 +183,56 @@ export function UserBadgeGrid({
                     name="badgeIds"
                     key="badgeIds"
                     render={({ field }) => (
-                      <FormItem className="grid gap-3 grid-cols-4">
-                        {badges?.map((badge) => (
-                          <FormField
-                            key={badge.id}
-                            control={form.control}
-                            name="badgeIds"
-                            render={({ field }) => {
-                              return (
-                                <FormItem>
-                                  <FormControl>
-                                    <Toggle
-                                      variant={"default"}
-                                      className="bg-primary px-[0.5] py-1"
-                                      pressed={field.value!.includes(badge.id)}
-                                      value={badge.id}
-                                      key={badge.id}
-                                      onPressedChange={(value) => {
-                                        return value
-                                          ? field.onChange([
-                                            ...field.value!,
-                                            badge.id,
-                                          ])
-                                          : field.onChange(
-                                            field.value?.filter(
-                                              (v) => v !== badge.id
-                                            )
-                                          );
-                                      }}
-                                    >
-                                      <TooltipProvider>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <Avatar>
-                                              <AvatarImage
-                                                src={badge.imageUrl}
-                                              />
-                                              <AvatarFallback className="bg-primary text-secondary">
-                                                <Badge />
-                                              </AvatarFallback>
-                                            </Avatar>
-                                          </TooltipTrigger>
-                                          <TooltipContent>
-                                            {badge.name}
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      </TooltipProvider>
-                                    </Toggle>
-                                  </FormControl>
-                                </FormItem>
-                              );
-                            }}
-                          />
+                      <FormItem className="grid gap-1 grid-cols-5 items-center">
+                        {Object.entries(groupedBadges).map(([subteamType, badges]: [string, BD[]]) => (
+                          <React.Fragment key={subteamType}>
+                            <div className="col-span-5">
+                              <h5>{subteamType}</h5>
+                            </div>
+                            {badges.map((badge: BD) => (
+                              <FormField
+                                key={badge.id}
+                                control={form.control}
+                                name="badgeIds"
+                                render={({ field }) => {
+                                  return (
+                                    <FormItem>
+                                      <FormControl>
+                                        <Toggle
+                                          variant={"default"}
+                                          className="px-[0.5] py-1"
+                                          pressed={field.value && field.value.includes(badge.id)}
+                                          value={badge.id}
+                                          key={badge.id}
+                                          onPressedChange={(value) => {
+                                            return value
+                                              ? field.onChange([...field.value!, badge.id])
+                                              : field.onChange(
+                                                field.value?.filter((v) => v !== badge.id)
+                                              );
+                                          }}
+                                        >
+                                          <TooltipProvider>
+                                            <Tooltip>
+                                              <TooltipTrigger asChild>
+                                                <Avatar>
+                                                  <AvatarImage src={badge.imageUrl} />
+                                                  <AvatarFallback className="bg-transparent text-primary">
+                                                    ?
+                                                  </AvatarFallback>
+                                                </Avatar>
+                                              </TooltipTrigger>
+                                              <TooltipContent>{badge.name}</TooltipContent>
+                                            </Tooltip>
+                                          </TooltipProvider>
+                                        </Toggle>
+                                      </FormControl>
+                                    </FormItem>
+                                  );
+                                }}
+                              />
+                            ))}
+                          </React.Fragment>
                         ))}
                       </FormItem>
                     )}
