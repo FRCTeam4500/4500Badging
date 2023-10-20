@@ -23,7 +23,7 @@ export default async function Page() {
         <ModeToggle className="ml-2" />
         <EditProfileButton profile={profile} />
       </div>
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
+      <h1 className="scroll-m-20 mt-4 text-4xl font-extrabold tracking-tight lg:text-5xl text-center">
         Hello, {profile.name}
       </h1>
       <div className="flex justify-center items-center flex-grow"> {/* Use flex-grow */}
