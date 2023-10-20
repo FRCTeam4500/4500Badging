@@ -2,9 +2,9 @@ import { Toggle } from "@/components/ui/toggle";
 import { useModal } from "@/hooks/use-modal-store";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Badge, BadgeCheck } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -25,6 +25,7 @@ import {
 } from "../ui/tooltip";
 import React from "react";
 import { Badge as BD, UserBadge } from "@prisma/client";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
 const formSchema = z.object({
   badgeIds: z.array(z.string()).optional(),
@@ -121,12 +122,9 @@ export function UserBadgeGrid({
         });
         const content = await rawResponse.json();
         console.log(content);
-        router.refresh();
       })();
 
       form.reset();
-      router.refresh();
-      onClose();
     } catch (error) {
       console.error(error);
     }
@@ -150,11 +148,11 @@ export function UserBadgeGrid({
 
   return (
     <div>
-      <DropdownMenu open={open}>
+      <Dialog open={open}>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <DropdownMenuTrigger
+              <DialogTrigger
                 className={cn("bg-primary px-[0.5]", className)}
                 asChild
               >
@@ -167,95 +165,88 @@ export function UserBadgeGrid({
                   <BadgeCheck className="text-secondary" />
                   <span className="sr-only">Do Stuff</span>
                 </Button>
-              </DropdownMenuTrigger>
+              </DialogTrigger>
             </TooltipTrigger>
             <TooltipContent>Edit Profile Badges</TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <DropdownMenuContent className=" max-h-64 overflow-y-scroll" align="end">
-          <DropdownMenuItem>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <ScrollArea>
-                  <FormField
-                    control={form.control}
-                    name="badgeIds"
-                    key="badgeIds"
-                    render={({ field }) => (
-                      <FormItem className="grid gap-1 grid-cols-5 items-start">
-                        {Object.entries(groupedBadges).map(([subteamType, badges]: [string, BD[]]) => (
-                          <React.Fragment key={subteamType}>
-                            <div className="col-span-5">
-                              <h5>{subteamType}</h5>
-                            </div>
-                            {badges.map((badge: BD) => (
-                              <FormField
-                                key={badge.id}
-                                control={form.control}
-                                name="badgeIds"
-                                render={({ field }) => {
-                                  return (
-                                    <FormItem>
-                                      <FormControl>
-                                        <Toggle
-                                          variant={"outline"}
-                                          className="px-[0.5] py-1"
-                                          pressed={field.value && field.value.includes(badge.id)}
-                                          value={badge.id}
-                                          key={badge.id}
-                                          onPressedChange={(value) => {
-                                            return value
-                                              ? field.onChange([...field.value!, badge.id])
-                                              : field.onChange(
-                                                field.value?.filter((v) => v !== badge.id)
-                                              );
-                                          }}
-                                        >
-                                          <TooltipProvider>
-                                            <Tooltip>
-                                              <TooltipTrigger asChild>
-                                                <Avatar>
-                                                  <AvatarImage src={badge.imageUrl} />
-                                                  <AvatarFallback className="bg-transparent text-primary">
-                                                    ?
-                                                  </AvatarFallback>
-                                                </Avatar>
-                                              </TooltipTrigger>
-                                              <TooltipContent>{badge.name}</TooltipContent>
-                                            </Tooltip>
-                                          </TooltipProvider>
-                                        </Toggle>
-                                      </FormControl>
-                                    </FormItem>
-                                  );
-                                }}
-                              />
-                            ))}
-                          </React.Fragment>
-                        ))}
-                      </FormItem>
-                    )}
-                  />
-                </ScrollArea>
-                <div className="grid grid-cols-1 mt-2">
-                  <Button
-                    variant="default"
-                    onClick={() => setOpen(false)}
-                    disabled={isLoading}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </DropdownMenuItem>
-          {/* <DropdownMenuItem >
-          <Button onClick={() => handleSelectionEnd()} variant={"default"}>
-            Submit Selection
-          </Button>
-        </DropdownMenuItem> */}
-        </DropdownMenuContent>
-      </DropdownMenu>
+        <DialogContent className="max-h-screen overflow-y-scroll">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <ScrollArea>
+                <FormField
+                  control={form.control}
+                  name="badgeIds"
+                  key="badgeIds"
+                  render={({ field }) => (
+                    <FormItem className="grid gap-1 grid-cols-5 items-start">
+                      {Object.entries(groupedBadges).map(([subteamType, badges]: [string, BD[]]) => (
+                        <React.Fragment key={subteamType}>
+                          <div className="col-span-5">
+                            <h5>{subteamType}</h5>
+                          </div>
+                          {badges.map((badge: BD) => (
+                            <FormField
+                              key={badge.id}
+                              control={form.control}
+                              name="badgeIds"
+                              render={({ field }) => {
+                                return (
+                                  <FormItem>
+                                    <FormControl>
+                                      <Toggle
+                                        variant={"outline"}
+                                        className="px-[0.5] py-1"
+                                        pressed={field.value && field.value.includes(badge.id)}
+                                        value={badge.id}
+                                        key={badge.id}
+                                        onPressedChange={(value) => {
+                                          return value
+                                            ? field.onChange([...field.value!, badge.id])
+                                            : field.onChange(
+                                              field.value?.filter((v) => v !== badge.id)
+                                            );
+                                        }}
+                                      >
+                                        <TooltipProvider>
+                                          <Tooltip>
+                                            <TooltipTrigger asChild>
+                                              <Avatar>
+                                                <AvatarImage src={badge.imageUrl} />
+                                                <AvatarFallback className="bg-transparent text-primary">
+                                                  ?
+                                                </AvatarFallback>
+                                              </Avatar>
+                                            </TooltipTrigger>
+                                            <TooltipContent>{badge.name}</TooltipContent>
+                                          </Tooltip>
+                                        </TooltipProvider>
+                                      </Toggle>
+                                    </FormControl>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                          ))}
+                        </React.Fragment>
+                      ))}
+                    </FormItem>
+                  )}
+                />
+              </ScrollArea>
+              <div className="grid grid-cols-1 mt-2">
+                <Button
+                  variant="default"
+                  onClick={() => setOpen(false)}
+                  disabled={isLoading}
+                >
+                  Save
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
