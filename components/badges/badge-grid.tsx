@@ -77,7 +77,6 @@ export function UserBadgeGrid({
           const data = await response.json();
           setUserBadges(data);
           const userBadgeBadgeIds = Array.from(data.badges).map((badge: any) => badge.badgeId)
-          console.log(userBadgeBadgeIds)
           form.setValue("badgeIds", userBadgeBadgeIds);
         } else {
           console.error("Failed to fetch user badges");

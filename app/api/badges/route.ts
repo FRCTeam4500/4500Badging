@@ -20,6 +20,9 @@ export async function GET(req: Request) {
         include: {
           userBadge: true,
         },
+        orderBy: {
+          level: "asc",
+        }
       });
       return NextResponse.json(ret);
     } else {
