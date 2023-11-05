@@ -2,6 +2,22 @@
 
 > An interactive view of FRC Team 4500's **Badging and Certification**
 
+## Table of Contents
+
+-   [Introduction](#introduction)
+-   [Technologies](#technologies)
+    -   [Basic](#basic)
+    -   [Styling](#styling)
+-   [File Structure](#file-structure)
+    -   [Lib](#lib)
+        -   [db.ts](#dbts)
+        -   [current-profile.ts](#current-profilets)
+        -   [initial-profile.ts](#initial-profilets)
+        -   [utils.ts](#utilsts)
+    -   [Hooks](#hooks)
+        -   [useIsVisible](#useisvisible)
+        -   [useModal](#usemodal)
+
 ## Introduction
 
 [A Detailed Look At The Badging System For The Programming Team](https://frcteam4500.github.io/mkdocs-4500-docs/2024%20Badge%20System/2024%20Badge%20System/)
