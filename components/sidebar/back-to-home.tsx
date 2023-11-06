@@ -4,6 +4,13 @@ import { LucideHome } from "lucide-react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+/**
+ * Back to home button. Returns to the home page.
+ * 
+ * Redirects to `/` which then handles other redirects based on role.
+ * 
+ * Can be triggered with `cmd/ctrl + c`.
+ */
 export const BackToHome = () => {
   const router = useRouter();
 

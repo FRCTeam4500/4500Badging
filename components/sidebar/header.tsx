@@ -16,6 +16,9 @@ interface SubteamHeaderProps {
   role?: Profile_role;
 }
 
+/**
+ * Subteam header. Contains the navigation buttons
+ */
 export const Header = ({ role }: SubteamHeaderProps) => {
   const isCoach = role === Profile_role.COACH;
   const isLeadOrMentor =

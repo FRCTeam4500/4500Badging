@@ -25,6 +25,9 @@ const roleIconMap = {
   ),
 };
 
+/**
+ * Sidebar, used in the coach dashboard
+ */
 export const Sidebar = async () => {
   const profile = await currentProfile();
 

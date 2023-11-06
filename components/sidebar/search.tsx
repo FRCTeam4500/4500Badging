@@ -27,6 +27,9 @@ interface SubteamSearchProps {
   }[];
 }
 
+/**
+ * Search component for the sidebar. Uses the Command component.
+ */
 export const Search = ({ data }: SubteamSearchProps) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
