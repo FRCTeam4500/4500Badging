@@ -17,6 +17,14 @@
     -   [Hooks](#hooks)
         -   [useIsVisible](#useisvisible)
         -   [useModal](#usemodal)
+		-   [Components](#components)
+			-   [Modals](#modals)
+			-   [Providers](#providers)
+			-   [Sidebar](#sidebar)
+			-   [Tables](#tables)
+			-   [Ui](#ui)
+		-   [App](#app)
+			-   [Api](#api)
 
 ## Introduction
 
@@ -126,10 +134,10 @@ In the above code, the `cn` is the function that is being called to conditionall
 > [!NOTE]
 > The above implementation may seem useless, but it is very useful when the condition is a boolean value. For example, the following code will apply the `text-blue-500` classname if the `isBlue` variable is true, and it will not apply the classname if the `isBlue` variable is false. eg.
 
-```tsx
-<div className={cn("text-red-500", { "text-blue-500": isBlue })}>Hello!</div>
-```
-Where `isBlue` is a boolean value.
+> ```tsx
+> <div className={cn("text-red-500", { "text-blue-500": isBlue })}>Hello!</div>
+> ```
+> Where `isBlue` is a boolean value.
 
 ### Hooks
 
@@ -196,3 +204,94 @@ export const EditProfileSelfButton = ({ profile }: { profile: Profile }) => {
   );
 };
 ```
+
+### Components
+
+Components are the various components used in the website. These are written in `react tsx`, and they include the more specific parts of the website, such as the `BadgeCard` component.
+
+#### Modals
+
+Modals are the popups that appear when you click on the `edit-profile-self-button`. They are written in `react tsx`, and they include the various modals that appear in the website, such as the `edit-profile-self-modal` component.
+
+#### Providers
+
+Providers are more specialized. The `modal-provider` is a component that wraps the entire website, and it provides the context for the modals to appear. They basically preload the modals so that they can be called from anywhere in the website.
+
+#### Sidebar
+
+The sidebar is the sidebar that appears on the left side of the website (Currently available for coaches). It is written in `react tsx`, and it includes the various components that appear in the sidebar, such as the `SidebarMember` component.
+
+#### Tables
+
+Arguably one of the most difficult parts of the website. Contains code to parse and display all profiles (Currently available for coaches). It is written in `react tsx`, and uses ShadCN UI Tables to display the data.
+
+#### Ui
+
+The `ui` directory contains the various components that are used throughout the website. These are written in `react tsx`, and they include the more general parts of the website, such as the `Button` component. These are from the [ShadCN UI](https://ui.shadcn.com/) library.
+
+### App
+
+The `app` directory contains the source code for the website.
+
+#### api
+
+The `api` directory contains the api routes for the website. These are used to send requests to the server. These are written in `javascript`, and they include the various routes nesessary to communicate between our database and website of the website, such as `app/api/badges/route.ts` which contains the GET and POST routes for the badges.
+
+These requests take headers, except for the GET requests. The headers are used to authenticate the user and provide details on the task, and they are used to determine whether the user is allowed to perform the action.
+
+NextJS has a built in API route handler, and it is used to handle the requests. The `req` is the request, and the `res` is the response. The `res` is used to send the response to the client. It uses [slugs](https://nextjs.org/docs/app/building-your-application/routing/dynamic-routes) to support dynamic routes. This means that the routes can be used to send requests to different profiles, badges, etc. eg: `app/api/profiles/[profileId]/route.ts` can be used to send requests to the profile with the id of `profileId`.
+
+The Profile Id can then be accessed like so:
+
+```ts
+export async function GET(
+  req: Request,
+  { params }: { params: { profileId: string } }
+) {
+	//...Code Goes Here, usually try catch
+}
+```
+Where `params` is the parameters passed to the route, and `profileId` is the profile id.
+
+There are different types of requests, and they are used to perform different actions. The `GET` request is used to get data from the database, the `POST` request is used to create data in the database, the `PATCH` request is used to update data in the database, and the `DELETE` request is used to delete data from the database.
+
+Example usage of submitting PATCH request to `app/pages/api/profiles/[profileId]/route.ts` from `app/components/modals/edit-phone-self-modal.tsx`:
+
+```tsx
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
+	try {
+		(async () => {
+			console.log(profile?.id);
+			const rawResponse = await fetch(`/api/profiles/${profile?.id}`, {
+				method: "PATCH",
+				headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+				phoneNumber: values.phoneNumber,
+				mainSubteam: values.mainSubteam,
+				isSelf: true,
+				}),
+			});
+			const content = await rawResponse.json();
+			console.log(content); // TODO: DO SOMETHING ELSE WITH IT
+			router.refresh();
+		})();
+
+		form.reset();
+		router.refresh();
+		toast({
+			title: "Phone Number Updated",
+			description: "Your phone number has been updated.",
+		});
+		onClose();
+	} catch (error) {
+		console.error(error);
+	}
+};
+```
+Where `profile?.id` is the profile id, `values.phoneNumber` is the phone number to update, `values.mainSubteam` is the main subteam to update, and `isSelf` is a boolean value that determines whether the profile is the current profile.
+
+> [!NOTE]
+> The above implementation is from the `edit-phone-self-modal` component. It is used to update the phone number and main subteam of the current profile. This involves the use of a form. Forms can get complicated very quickly, but here is a good resource to get started: [React Hook Form](https://react-hook-form.com/).
