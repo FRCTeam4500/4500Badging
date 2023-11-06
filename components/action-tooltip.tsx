@@ -14,6 +14,9 @@ interface ActionTooltipProps {
   align?: "start" | "center" | "end";
 }
 
+/**
+ * A quick and dirty tooltip for action buttons.
+ */
 export const ActionTooltip = ({
   label,
   children,

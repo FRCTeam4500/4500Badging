@@ -5,6 +5,11 @@ import { Profile } from "@prisma/client";
 import { Edit } from "lucide-react";
 import { Button } from "./ui/button";
 
+/**
+ * Edit profile button. Opens the edit profile modal.
+ * 
+ * @param profile The profile to edit.
+ */
 export const EditProfileButton = ({ profile }: { profile: Profile }) => {
   const { onOpen } = useModal();
   return (

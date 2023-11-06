@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
+/**
+ * A theme selector button.
+ */
 export function ModeToggle({ className }: { className?: string }) {
   const { setTheme } = useTheme();
 

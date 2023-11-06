@@ -23,7 +23,7 @@ const roleIconMap = {
   ),
 };
 
-export const SubteamMember = ({ profile }: SubteamMemberProps) => {
+export const Member = ({ profile }: SubteamMemberProps) => {
   const params = useParams();
   const router = useRouter();
 

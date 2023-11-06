@@ -70,6 +70,9 @@ export async function fetchDelete({ id }: { id: string }) {
   });
 }
 
+/**
+ * A data table. Contains the column definitions and data.
+ */
 export function DataTable<TData, TValue>({
   columns,
   data,

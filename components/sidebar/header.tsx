@@ -16,9 +16,7 @@ interface SubteamHeaderProps {
   role?: Profile_role;
 }
 
-export const SubteamHeader = ({ role }: SubteamHeaderProps) => {
-  const { onOpen } = useModal();
-
+export const Header = ({ role }: SubteamHeaderProps) => {
   const isCoach = role === Profile_role.COACH;
   const isLeadOrMentor =
     isCoach || role === Profile_role.LEAD || role === Profile_role.MENTOR;

@@ -2,8 +2,11 @@ import { Menu } from "lucide-react";
 
 import { Sheet, SheetContent, SheetTrigger } from "./sheet";
 import { Button } from "@/components/ui/button";
-import { SubteamSidebar } from "@/components/sidebar/sidebar";
+import { Sidebar } from "@/components/sidebar/sidebar";
 
+/**
+ * Mobile toggle for the sidebar
+ */
 export function MobileToggle() {
   return (
     <Sheet>
@@ -13,7 +16,7 @@ export function MobileToggle() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="p-0 flex w-60 gap-0">
-        <SubteamSidebar />
+        <Sidebar />
       </SheetContent>
     </Sheet>
   );

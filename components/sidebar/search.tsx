@@ -1,6 +1,6 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Search as SC } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
@@ -27,7 +27,7 @@ interface SubteamSearchProps {
   }[];
 }
 
-export const SubteamSearch = ({ data }: SubteamSearchProps) => {
+export const Search = ({ data }: SubteamSearchProps) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const params = useParams();
@@ -58,7 +58,7 @@ export const SubteamSearch = ({ data }: SubteamSearchProps) => {
         onClick={() => setOpen(true)}
         className="group px-2 py-2 rounded-md flex items-center gap-x-2 w-full hover:bg-zinc-700/10 dark:hover:bg-zinc-700/50 transition"
       >
-        <Search className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+        <SC className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
         <p className="font-semibold text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition">
           Search
         </p>

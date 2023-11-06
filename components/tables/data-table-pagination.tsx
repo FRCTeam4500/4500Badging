@@ -19,6 +19,9 @@ interface DataTablePaginationProps<TData> {
   table: Table<TData>;
 }
 
+/**
+ * Enables pagination for a data table. This component is meant to be used as a child of a data table.
+ */
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {

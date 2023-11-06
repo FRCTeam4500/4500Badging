@@ -68,6 +68,8 @@ The `lib` directory contains various helper function that are used throughout th
 
 The `prisma` directory contains the `prisma` schema, which is used to generate the `prisma` client. The `PrismaClient`(`db.ts`) is used to interact with the database. More details for these functions are available below.
 
+The `public` directory contains the various static files used in the website. These are written in `html`, `css`, `js`, `png`, `svg`, `ico`, `xml`, `webmanifest`, and `json`, and they include the more general parts of the website, such as the `favicon.ico` file. Assets such as images and fonts are also stored in this directory.
+
 ### Lib
 
 Files in the `lib` directory are used to provide helper functions for the website.
@@ -133,7 +135,6 @@ In the above code, the `cn` is the function that is being called to conditionall
 
 > [!NOTE]
 > The above implementation may seem useless, but it is very useful when the condition is a boolean value. For example, the following code will apply the `text-blue-500` classname if the `isBlue` variable is true, and it will not apply the classname if the `isBlue` variable is false. eg.
-
 > ```tsx
 > <div className={cn("text-red-500", { "text-blue-500": isBlue })}>Hello!</div>
 > ```

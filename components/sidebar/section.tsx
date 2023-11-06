@@ -12,7 +12,7 @@ interface SubteamSectionProps {
   sectionType: "members";
 }
 
-export const SubteamSection = ({ label }: SubteamSectionProps) => {
+export const Section = ({ label }: SubteamSectionProps) => {
   const { onOpen } = useModal();
 
   return (
