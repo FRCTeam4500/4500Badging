@@ -1,11 +1,8 @@
 import { EditProfileButton } from "@/components/edit-profile-button";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { initialProfile } from "@/lib/initial-profile";
 import { UserButton } from "@clerk/nextjs";
 import { Profile_role } from "@prisma/client";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GradButtons } from "./grad-buttons";
 

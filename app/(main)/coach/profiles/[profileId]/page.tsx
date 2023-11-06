@@ -1,18 +1,15 @@
 import BadgeButton from "@/components/badges/badge-button";
 import { EditProfileButton } from "@/components/edit-profile-button";
 import { MobileToggle } from "@/components/mobile-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { redirectToSignIn } from "@clerk/nextjs";
 import { Profile_role } from "@prisma/client";
-import { Badge } from "lucide-react";
 import { redirect } from "next/navigation";
 
 interface ProfileIdPageProps {

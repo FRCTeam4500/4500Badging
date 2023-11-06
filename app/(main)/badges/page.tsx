@@ -3,19 +3,14 @@
  */
 
 import { AddBadgeButton } from "@/components/add-badge-button";
-import BadgeButton from "@/components/badges/badge-button"
-import { BadgeCard } from "@/components/badges/badge-card";
-import { EditProfileSelfButton } from "@/components/edit-profile-self-button";
+import BadgeButton from "@/components/badges/badge-button";
 import { HomeButtonIcon } from "@/components/home-button-icon";
 import { ModeToggle } from "@/components/mode-toggle";
-import { BackToHome } from "@/components/sidebar/back-to-home";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { UserButton } from "@clerk/nextjs";
 import { Profile_role, Subteams } from "@prisma/client";
-import { Badge } from "lucide-react";
 
 export default async function Page() {
   const badges = await db.badge.findMany({ orderBy: { level: "asc" } });
