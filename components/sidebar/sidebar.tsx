@@ -7,10 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 
-import { SubteamHeader } from "./subteam-header";
-import { SubteamSearch } from "./subteam-search";
-import { SubteamSection } from "./subteam-section";
-import { SubteamMember } from "./subteam-member";
+import { Header } from "./header";
+import { Search } from "./search";
+import { Section } from "./section";
+import { Member } from "./member";
 import { BackToHome } from "./back-to-home";
 
 const roleIconMap = {
@@ -25,7 +25,10 @@ const roleIconMap = {
   ),
 };
 
-export const SubteamSidebar = async () => {
+/**
+ * Sidebar, used in the coach dashboard
+ */
+export const Sidebar = async () => {
   const profile = await currentProfile();
 
   if (!profile) {
@@ -38,11 +41,11 @@ export const SubteamSidebar = async () => {
 
   return (
     <div className="flex flex-col h-full text-primary w-full transition-transform ease-in">
-      <SubteamHeader role={role} />
+      <Header role={role} />
       <ScrollArea className="flex-1 px-3 pb-10 h-screen">
         <div className="mt-2 flex flex-col">
           <BackToHome />
-          <SubteamSearch
+          <Search
             data={[
               {
                 label: "Members",
@@ -59,10 +62,10 @@ export const SubteamSidebar = async () => {
         <Separator className="bg-zinc-200 dark:bg-zinc-700 rounded-md my-2" />
         {!!profiles?.length && (
           <div className="mb-2">
-            <SubteamSection sectionType="members" role={role} label="Members" />
+            <Section sectionType="members" role={role} label="Members" />
             <div className="space-y-[2px]">
               {profiles.map((member) => (
-                <SubteamMember key={member.id} profile={member} />
+                <Member key={member.id} profile={member} />
               ))}
             </div>
           </div>

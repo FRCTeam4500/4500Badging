@@ -6,6 +6,12 @@ import { Edit } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 
+/**
+ * Edit badge button. Opens the edit badge modal.
+ * 
+ * @param badge The badge to edit.
+ * @returns 
+ */
 export const EditBadgeButton = ({ badge, className }: { badge: BD, className?: string }) => {
     const { onOpen } = useModal();
     return (

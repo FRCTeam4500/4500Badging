@@ -9,12 +9,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { ScrollArea } from "../ui/scroll-area";
 import {
@@ -33,7 +27,6 @@ const formSchema = z.object({
 
 export function UserBadgeGrid({
   className,
-  modalType,
 }: {
   className?: string;
   modalType: string;

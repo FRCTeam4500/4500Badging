@@ -7,6 +7,9 @@ import { AddBadgeModal } from "@/components/modals/add-badge-modal";
 import { EditBadgeModal } from "../modals/edit-badge-modal";
 import { AddProfileModal } from "../modals/add-profile-modal";
 
+/**
+ * Modal provider. Mounts all modals.
+ */
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
 

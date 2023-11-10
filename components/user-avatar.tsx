@@ -6,6 +6,9 @@ interface UserAvatarProps {
   className?: string;
 };
 
+/**
+ * Specialized ShadCN user avatar
+ */
 export const UserAvatar = ({
   src,
   className

@@ -1,6 +1,9 @@
 import { Badge, Profile } from "@prisma/client";
 import { create } from "zustand";
 
+/**
+ * The type of modal that can be opened.
+ */
 export type ModalType =
   | "editBadge"
   | "editProfile"
@@ -8,6 +11,9 @@ export type ModalType =
   | "addBadge"
   | "addProfile";
 
+/**
+ * The data that can be passed to the modal.
+ */
 interface ModalData {
   badge?: Badge;
   accessor?: Profile;
@@ -16,6 +22,9 @@ interface ModalData {
   query?: Record<string, any>;
 }
 
+/**
+ * The modal store.
+ */
 interface ModalStore {
   type: ModalType | null;
   data: ModalData;
@@ -24,6 +33,9 @@ interface ModalStore {
   onClose: () => void;
 }
 
+/**
+ * A store for managing the modal state.
+ */
 export const useModal = create<ModalStore>((set) => ({
   type: null,
   data: {},

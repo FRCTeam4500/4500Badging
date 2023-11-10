@@ -4,6 +4,9 @@ import { useModal } from "@/hooks/use-modal-store";
 import { Plus } from "lucide-react";
 import { Button } from "./ui/button";
 
+/**
+ * Add badge button. Opens the add badge modal.
+ */
 export const AddBadgeButton = () => {
 	const { onOpen } = useModal();
 	return (

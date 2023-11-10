@@ -1,4 +1,3 @@
-import { updateProfile } from "./../../../../lib/update-profile";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";

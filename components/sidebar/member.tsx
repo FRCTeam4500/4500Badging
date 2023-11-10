@@ -23,7 +23,10 @@ const roleIconMap = {
   ),
 };
 
-export const SubteamMember = ({ profile }: SubteamMemberProps) => {
+/**
+ * Each member in the sidebar. (Clickable)
+ */
+export const Member = ({ profile }: SubteamMemberProps) => {
   const params = useParams();
   const router = useRouter();
 
