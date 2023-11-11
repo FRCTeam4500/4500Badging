@@ -8,10 +8,13 @@ import HomeComp from "./home-comp";
 export default async function Home() {
   const profile: Profile = await initialProfile();
 
+  let show = true;
   if (profile.role === Profile_role.COACH) {
+    show = false;
     redirect("/coach");
   }
 
+  // In case we need to add a lead page for whatever reason
   // if (
   //   profile.role === Profile_role.LEAD ||
   //   profile.role === Profile_role.CAPTAIN ||
@@ -19,8 +22,6 @@ export default async function Home() {
   // ) {
   //   redirect("/lead");
   // }
-
-  /* TODO: ADD CHECKS FOR OTHER ROLES, If we need different views */
 
   const profileBadges = await db.userBadge.findMany({
     where: {
@@ -96,7 +97,7 @@ export default async function Home() {
 
   return (
     <div>
-      <HomeComp userBadges={profileBadges} profile={profile} requirements={{ lv3Recieved, blueRecieved, scoutingRecieved, outreachRecieved, registrationRecieved, travelRecieved }} />
+      {!show ? <div></div> : <HomeComp userBadges={profileBadges} profile={profile} requirements={{ lv3Recieved, blueRecieved, scoutingRecieved, outreachRecieved, registrationRecieved, travelRecieved }} /> }
     </div>
   );
 }
