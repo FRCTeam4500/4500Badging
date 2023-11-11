@@ -1,6 +1,6 @@
 "use client"
 
-import { BadgeCent, BadgeIcon, BadgeRussianRuble, User } from "lucide-react";
+import { BadgeRussianRuble, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 

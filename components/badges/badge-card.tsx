@@ -1,5 +1,4 @@
 import { Badge } from "@prisma/client";
-import { Card } from "../ui/card";
 import { cn } from "@/lib/utils";
 
 interface BadgeCardProps {

@@ -1,6 +1,5 @@
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
-import { initialProfile } from "@/lib/initial-profile";
 import { Profile, Profile_role, Subteams, UserBadge } from "@prisma/client";
 import { NextResponse } from "next/server";
 

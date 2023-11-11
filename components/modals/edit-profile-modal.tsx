@@ -72,7 +72,7 @@ export const EditProfileModal = () => {
 
   const roles = ["COACH", "MEMBER", "MENTOR", "CAPTAIN", "LEADERSHIP", "LEAD"];
   const grades = ["9", "10", "11", "12"];
-  const graduationYears = ["2024", "2025", "2026", "2027"];
+  const graduationYears = ["2024", "2025", "2026", "2027"]; // TODO: CHANGE EVERY YEAR or make it dynamic :0
   const subteams = [
     {
       id: Subteams.NONE,
