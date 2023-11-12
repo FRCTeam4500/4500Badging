@@ -1,12 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: [
-      "uploadthing.com",
-      "docs.google.com",
-      "images.unsplash.com",
-      "img.clerk.com",
-    ],
+    remotePatterns: [
+      {
+        hostname: "uploadthing.com",
+      },
+      {
+        hostname: "docs.google.com"
+      },
+      {
+        hostname: "images.unsplash.com"
+      },
+      {
+        hostname: "img.clerk.com"
+      }
+    ]
   },
   compiler: {
     styledComponents: true,

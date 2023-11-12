@@ -1,21 +1,13 @@
 import { EditBadgeButton } from "@/components/edit-badge-button";
-import { EditProfileButton } from "@/components/edit-profile-button";
 import { HomeButtonIcon } from "@/components/home-button-icon";
-import { MobileToggle } from "@/components/mobile-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { UserButton, redirectToSignIn } from "@clerk/nextjs";
 import { Profile_role } from "@prisma/client";
 import { Badge } from "lucide-react";
-import { redirect } from "next/navigation";
+import Link from "next/link";
 
 interface ProfileIdPageProps {
     params: {
@@ -53,14 +45,17 @@ const ProfileIdPage = async ({ params }: ProfileIdPageProps) => {
             </h1>
 
             <div className="flex justify-center items-center">
-                <img
-                    className="rounded-full"
-                    src={badge?.imageUrl}
-                    alt={`${badge?.name} Badge`}
-                />
+                <Avatar className="w-32 h-32">
+                    <AvatarImage
+                        src={badge?.imageUrl}
+                    />
+                    <AvatarFallback>
+                        <Badge size={64} />
+                    </AvatarFallback>
+                </Avatar>
             </div>
 
-            <div className="flex flex-col items-center mt-4 mx-14 p-4 justify-center">
+            <div className="flex flex-col items-center mx-14 p-4 justify-center">
                 <div>
                     <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
                         Profile Info
@@ -77,22 +72,39 @@ const ProfileIdPage = async ({ params }: ProfileIdPageProps) => {
                 </div>
             </div>
             <div className="flex flex-col items-center mt-4 mx-14 p-4 justify-center">
-                <div className="flex flex-col w-96 mt-4 items-center justify-center">
-                    <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
-                        Description
-                    </h2>
-                    <h2>
-                        {badge?.description}
-                    </h2>
-                </div>
-                <div className="flex flex-col w-96 mt-4 items-center justify-center">
-                    <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
-                        Deliverable
-                    </h2>
-                    <h2>
-                        {badge?.deliverable}
-                    </h2>
-                </div>
+                {badge?.description ?
+                    <div className="flex flex-col w-96 mt-4 items-center justify-center">
+                        <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
+                            Description
+                        </h2>
+                        <h2>
+                            {badge?.description}
+                        </h2>
+                    </div>
+                :
+                    null
+                }
+                {badge?.deliverable ?
+                    <div className="flex flex-col w-96 mt-4 items-center justify-center">
+                        <h2 className="text-xl text-muted-foreground lg:text-2xl md:text-2xl p-4 mb-4 xl:text-2xl 2xl:text2xl font-bold text-center">
+                            Deliverable
+                        </h2>
+                        <h2>
+                            {badge?.deliverable}
+                        </h2>
+                    </div>
+                :
+                    null
+                }
+                {badge?.deliverableUrl ?
+                    <div className="flex flex-col w-96 mt-4 items-center justify-center">
+                        <Link href={badge?.deliverableUrl} className="p-4 rounded-md bg-secondary">
+                            See Deliverable
+                        </Link>
+                    </div>
+                :
+                    null
+                }
             </div>
         </div>
     );

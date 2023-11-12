@@ -39,6 +39,7 @@ export async function PATCH(
       level,
       description,
       deliverable,
+      deliverableUrl,
       imageUrl,
       subteamType,
     } = await req.json(); // Subteams are subteam types
@@ -66,6 +67,7 @@ export async function PATCH(
     if (description) updateData.description = description;
     if (deliverable) updateData.deliverable = deliverable;
     if (subteamType) updateData.subteamType = subteamType;
+    if (deliverableUrl) updateData.deliverableUrl = deliverableUrl;
 
     const updatedProfile = await db.badge.update({
       where: {

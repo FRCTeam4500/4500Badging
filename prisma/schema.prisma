@@ -34,6 +34,7 @@ model Badge {
   description String
   deliverable String      @db.Text
   imageUrl    String      @db.Text
+  deliverableUrl String @default("")
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   userBadge   UserBadge[]

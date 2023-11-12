@@ -4,6 +4,7 @@ import { initialProfile } from "@/lib/initial-profile";
 import { Profile, Profile_role, Subteams } from "@prisma/client";
 import { redirect } from "next/navigation";
 import HomeComp from "./home-comp";
+import { Suspense } from "react";
 
 export default async function Home() {
   const profile: Profile = await initialProfile();
@@ -97,7 +98,9 @@ export default async function Home() {
 
   return (
     <div>
-      {!show ? <div></div> : <HomeComp userBadges={profileBadges} profile={profile} requirements={{ lv3Recieved, blueRecieved, scoutingRecieved, outreachRecieved, registrationRecieved, travelRecieved }} /> }
+      <Suspense fallback={<div></div>}>
+        {!show ? <div></div> : <HomeComp userBadges={profileBadges} profile={profile} requirements={{ lv3Recieved, blueRecieved, scoutingRecieved, outreachRecieved, registrationRecieved, travelRecieved }} /> }
+      </Suspense>
     </div>
   );
 }
