@@ -40,6 +40,7 @@ const formSchema = z.object({
   name: z.string(),
   description: z.string(),
   deliverable: z.string(),
+  deliverableUrl: z.string().optional(),
   imageUrl: z.string().optional(),
   level: z.number(),
   subteam: z.string().optional(),
@@ -84,6 +85,7 @@ export const AddBadgeModal = () => {
       name: "",
       description: "",
       deliverable: "",
+      deliverableUrl: "",
       imageUrl: "",
       level: 0,
       subteam: Subteams.Programming,
@@ -106,6 +108,7 @@ export const AddBadgeModal = () => {
             level: values.level,
             description: values.description,
             deliverable: values.deliverable,
+            deliverableUrl: values.deliverableUrl,
             imageUrl: values.imageUrl,
             subteamType: values.subteam,
           }),
@@ -176,6 +179,26 @@ export const AddBadgeModal = () => {
                         disabled={isLoading}
                         className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
                         placeholder="www.example.com/image.png"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="deliverableUrl"
+                render={({ field }) => (
+                  <FormItem className="grid grid-cols-2 gap-3 place-items-center">
+                    <FormLabel className="uppercase text-center text-xs font-bold">
+                      Deliverable URL
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isLoading}
+                        className="border-0 w-30 text-center hover:bg-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-0"
+                        placeholder="www.example.com"
                         {...field}
                       />
                     </FormControl>
