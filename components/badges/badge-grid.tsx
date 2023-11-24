@@ -115,11 +115,15 @@ export function UserBadgeGrid({
         });
         const content = await rawResponse.json();
         console.log(content);
+
+        // Move the router.refresh() call here
         router.refresh();
-      })();
+      })().catch((error) => {
+        // Handle fetch errors
+        console.error("Fetch error: ", error);
+      });
 
       form.reset();
-      router.refresh();
       onClose();
     } catch (error) {
       console.error(error);

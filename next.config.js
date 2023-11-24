@@ -19,6 +19,9 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
+  experimental: {
+    webpackBuildWorker: true,
+  }
 };
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({

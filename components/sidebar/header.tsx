@@ -47,7 +47,7 @@ export const Header = ({ role }: SubteamHeaderProps) => {
         {isCoach && <DropdownMenuSeparator />}
         <DropdownMenuItem
           onClick={() => {
-            location.href = "/coach/badges";
+            location.href = "/badges";
           }}
           className="px-3 py-2 text-sm cursor-pointer"
         >
